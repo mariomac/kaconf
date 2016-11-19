@@ -6,7 +6,7 @@ import org.junit.Test
 /**
  * Created by mmacias on 16/11/16.
  */
-class TestPropertySource : TestCase("Test Property Sources") {
+class PropertySourceTest : TestCase("Test Property Sources") {
     val b: Byte = -123
     val c: Char = '!'
     val s: Short = 30000
@@ -48,8 +48,13 @@ class TestPropertySource : TestCase("Test Property Sources") {
 
     @Test(expected = IllegalArgumentException::class)
     fun testUnexistingConverters() {
-        // esto haria fallar el test. Solo estoy "testeando el test"
-        // todo: poner un tipo de datos que haga que falle
-        properties.get("abc", Byte::class.java)
+        var illegalArgumentExceptionThrown = false;
+
+        try {
+            properties.get("b", Object::class.java)
+        } catch (e:IllegalArgumentException) {
+            illegalArgumentExceptionThrown = true;
+        }
+        assert(illegalArgumentExceptionThrown)
     }
 }

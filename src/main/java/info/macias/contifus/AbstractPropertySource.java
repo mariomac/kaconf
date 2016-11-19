@@ -22,12 +22,19 @@ public abstract class AbstractPropertySource implements PropertySource {
 
     protected Map<Class, Converter> converters = Collections.unmodifiableMap(Stream.of(
             entry(Byte.class, Byte::valueOf),
+            entry(byte.class, Byte::valueOf),
             entry(Character.class, value -> value.charAt(0)),
+            entry(char.class, value -> value.charAt(0)),
             entry(Short.class, Short::valueOf),
+            entry(short.class, Short::valueOf),
             entry(Integer.class, Integer::valueOf),
+            entry(int.class, Integer::valueOf),
             entry(Long.class, Long::valueOf),
+            entry(long.class, Long::valueOf),
             entry(Float.class, Float::valueOf),
+            entry(float.class, Float::valueOf),
             entry(Double.class, Double::valueOf),
+            entry(double.class, Double::valueOf),
             entry(String.class, value->value)
     ) .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
 
