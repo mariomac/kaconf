@@ -25,6 +25,7 @@ class PropertySourceTest : TestCase("Test Property Sources") {
         )
 
         override fun get(key: String?): String? = keyVals.get(key)
+        override fun isAvailable() = true
     }
 
     @Test

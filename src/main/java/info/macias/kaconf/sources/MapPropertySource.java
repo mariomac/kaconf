@@ -20,6 +20,7 @@ public class MapPropertySource extends AbstractPropertySource {
 
     @Override
     protected String get(String key) {
-        return properties.get(key).toString();
+        Object val = properties.get(key);
+        return val == null ? null : val.toString();
     }
 }
