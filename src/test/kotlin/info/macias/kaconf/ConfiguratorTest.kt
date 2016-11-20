@@ -30,7 +30,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
     fun testConfiguration() {
         val obj = ConfigurableClass()
         ConfiguratorBuilder()
-                .addPropertySource(MockedProperty())
+                .addSource(MockedProperty())
                 .build()
                 .configure(obj)
 
@@ -47,7 +47,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
     fun testInheritedProperties() {
         val obj = ConfigurableSubclass()
         ConfiguratorBuilder()
-                .addPropertySource(MockedProperty())
+                .addSource(MockedProperty())
                 .build()
                 .configure(obj)
 
@@ -72,12 +72,12 @@ class ConfiguratorTest : TestCase("Test Configurator") {
     fun testPropertyPreferences() {
         val obj = ConfigurableSubclass()
         ConfiguratorBuilder()
-                .addPropertySource(mapOf(
+                .addSource(mapOf(
                         "subprivatebyte" to "127",
                         "nullstring" to "hello boy",
                         "publicint" to "-4321"
                 ))
-                .addPropertySource(MockedProperty())
+                .addSource(MockedProperty())
                 .build()
                 .configure(obj)
 
@@ -96,5 +96,41 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.nullstring, "hello boy")
         assertNull(obj.nullinteger)
         assertEquals(obj.nullint,0)
+    }
+
+    @Test
+    fun testEnvSystemProperties() {
+        val env = mapOf(
+                "privatebyte" to "23",
+                "subprotectedstring" to "Hello you"
+        )
+        val properties = mapOf(
+                "privatebyte" to 1,
+                "publicint" to 333444
+        )
+        val obj = ConfigurableSubclass()
+        ConfiguratorBuilder()
+                .addSource(env)
+                .addSource(properties)
+                .addSource(MockedProperty())
+                .build()
+                .configure(obj)
+
+        assertEquals(obj.subprivatebyte, -12)
+        assertEquals(obj.subpublicint, 12345)
+        assertEquals(obj.subprotectedstring, "Hello you")
+        assertNull(obj.subnullstring)
+        assertNull(obj.subnullinteger)
+        assertEquals(obj.subnullint,0)
+
+        assertEquals(obj.privatebyte, 23)
+        assertEquals(obj.publicint, 333444)
+        assertEquals(obj.otherFieldSameProperty, 333444)
+        assertEquals(obj.protectedstring, "hello my colleague")
+        assertNull(obj.nullstring)
+        assertNull(obj.nullinteger)
+        assertEquals(obj.nullint,0)
+
+
     }
 }

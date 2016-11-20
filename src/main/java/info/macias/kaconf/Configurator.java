@@ -5,15 +5,25 @@ import java.util.List;
 import java.util.stream.Stream;
 
 /**
- * Created by mmacias on 16/11/16.
+ * Class that handles the configuration of objects
  */
 public class Configurator {
     private List<PropertySource> sources;
 
+    /**
+     * Instantiates a configuration
+     * @param sources a list of {@link PropertySource} instances, in order of priority
+     */
     Configurator(List<PropertySource> sources) {
         this.sources = sources;
     }
 
+    /**
+     * Configures the object passed as argument. It looks for {@link Property} annotations in the
+     * object passed as parameter.
+     *
+     * @param dst the object to configure
+     */
     public void configure(Object dst) {
         // Configure properties for this class and its superclasses
         for (Class c = dst.getClass(); c != null; c = c.getSuperclass()) {

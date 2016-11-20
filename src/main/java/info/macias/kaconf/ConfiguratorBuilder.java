@@ -14,13 +14,13 @@ import java.util.Properties;
 public class ConfiguratorBuilder {
     public List<PropertySource> psList = new ArrayList<>();
 
-    public ConfiguratorBuilder addPropertySource(Map<String,?> map) {
-        return addPropertySource(new MapPropertySource(map));
+    public ConfiguratorBuilder addSource(Map<String,?> map) {
+        return addSource(new MapPropertySource(map));
     }
-    public ConfiguratorBuilder addPropertySource(Properties properties) {
-        return addPropertySource(new JavaUtilPropertySource(properties));
+    public ConfiguratorBuilder addSource(Properties properties) {
+        return addSource(new JavaUtilPropertySource(properties));
     }
-    public ConfiguratorBuilder addPropertySource(PropertySource ps) {
+    public ConfiguratorBuilder addSource(PropertySource ps) {
         if(ps.isAvailable()) {
             psList.add(ps);
         }
