@@ -1,7 +1,6 @@
-package info.macias.contifus;
+package info.macias.kaconf;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import static java.util.AbstractMap.SimpleEntry;

@@ -1,4 +1,4 @@
-package info.macias.contifus;
+package info.macias.kaconf;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

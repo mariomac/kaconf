@@ -1,4 +1,4 @@
-package info.macias.contifus;
+package info.macias.kaconf;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -15,11 +15,14 @@ public class Configurator {
     }
 
     public void configure(Object dst) {
-        configure(dst,dst.getClass());
+        // Configure properties for this class and its superclasses
+        for (Class c = dst.getClass(); c != null; c = c.getSuperclass()) {
+            configure(dst, c);
+        }
     }
 
     private void configure(Object dst, Class clazz) {
-        for (Field f :clazz.getDeclaredFields()) {
+        for (Field f : clazz.getDeclaredFields()) {
             Stream.of(f.getAnnotations())
                     .filter(a -> a.annotationType().isAssignableFrom(Property.class))
                     .map(a -> (Property) a)
@@ -35,7 +38,7 @@ public class Configurator {
                                         try {
                                             f.set(dst, value);
                                         } catch (IllegalAccessException e) {
-                                            throw new RuntimeException(e);
+                                            throw new ConfiguratorException(e);
                                         }
                                         f.setAccessible(isAcessible);
                                     })

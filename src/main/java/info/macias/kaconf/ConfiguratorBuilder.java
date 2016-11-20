@@ -1,4 +1,4 @@
-package info.macias.contifus;
+package info.macias.kaconf;
 
 import java.util.ArrayList;
 import java.util.List;

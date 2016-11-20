@@ -1,6 +1,6 @@
-package info.macias.contifus.test;
+package info.macias.kaconf.test;
 
-import info.macias.contifus.Property;
+import info.macias.kaconf.Property;
 
 /**
  * Created by mmacias on 19/11/16.
@@ -18,6 +18,9 @@ public class ConfigurableClass {
     protected Integer nullinteger;
     @Property("nullint")
     protected int nullint;
+
+    @Property("publicint")
+    private int otherFieldSameProperty;
 
     public String getNullstring() {
         return nullstring;
@@ -41,5 +44,9 @@ public class ConfigurableClass {
 
     public byte getPrivatebyte() {
         return privatebyte;
+    }
+
+    public int getOtherFieldSameProperty() {
+        return otherFieldSameProperty;
     }
 }

@@ -1,4 +1,4 @@
-package info.macias.contifus
+package info.macias.kaconf
 
 import junit.framework.TestCase
 import org.junit.Test
@@ -10,13 +10,12 @@ class ConfiguratorBuilderTest : TestCase("Test Configurator Builder") {
 
     @Test(expected = ConfiguratorException::class)
     fun testInvalidBuild() {
-        println("Hola nen")
-        //ConfiguratorBuilder().build()
+        fail("TO DO")
     }
 
     @Test
     fun testNullResults() {
-
+        fail("TO DO")
     }
 
 }

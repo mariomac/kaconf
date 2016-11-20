@@ -1,4 +1,4 @@
-package info.macias.contifus
+package info.macias.kaconf
 
 import junit.framework.TestCase
 import org.junit.Test

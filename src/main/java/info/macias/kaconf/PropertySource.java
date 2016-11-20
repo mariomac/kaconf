@@ -1,4 +1,4 @@
-package info.macias.contifus;
+package info.macias.kaconf;
 
 /**
  * Created by mmacias on 16/11/16.
