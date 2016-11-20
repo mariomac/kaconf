@@ -4,7 +4,7 @@ Kickass Configuration system
 
 [2016 Mario Macías](http://github.com/mariomac/fucoconf)
 
-## About Fukaconf
+## About Kaconf
 
 ## Default Configurator behaviour
 

@@ -5,4 +5,5 @@ package info.macias.kaconf;
  */
 public interface PropertySource {
     <T> T get(String key, Class<T> type);
+    boolean isAvailable();
 }

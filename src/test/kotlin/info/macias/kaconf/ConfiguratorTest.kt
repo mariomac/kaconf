@@ -1,5 +1,6 @@
 package info.macias.kaconf
 
+import info.macias.kaconf.sources.AbstractPropertySource
 import info.macias.kaconf.test.ConfigurableClass
 import info.macias.kaconf.test.ConfigurableSubclass
 import junit.framework.TestCase

@@ -1,4 +1,6 @@
-package info.macias.kaconf;
+package info.macias.kaconf.sources;
+
+import info.macias.kaconf.PropertySource;
 
 import java.util.*;
 import java.util.stream.Collectors;
