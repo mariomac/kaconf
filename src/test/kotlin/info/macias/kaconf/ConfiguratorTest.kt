@@ -130,7 +130,25 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertNull(obj.nullstring)
         assertNull(obj.nullinteger)
         assertEquals(obj.nullint,0)
+    }
 
+    @Test
+    fun loadPropertiesFromPath() {
+        fail("TO DO")
+    }
 
+    @Test
+    fun loadPropertiesFromInputStream() {
+        fail("TO DO")
+    }
+
+    @Test
+    fun testStaticValues() {
+        fail("TO DO")
+
+    }
+    @Test
+    fun testFinalValues() {
+        fail("TO DO");
     }
 }

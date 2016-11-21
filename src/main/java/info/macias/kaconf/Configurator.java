@@ -20,9 +20,14 @@ public class Configurator {
 
     /**
      * Configures the object passed as argument. It looks for {@link Property} annotations in the
-     * object passed as parameter.
+     * object passed as parameter and assigns the annotated property name present in the
+     * {@link PropertySource} with the hightes priority
      *
      * @param dst the object to configure
+     * @throws ConfiguratorException if an invalid assignment has been intended (for example, assign
+     *         an alphanumeric value into an integer) or if the access to the destination field is
+     *         enforced by Java language access control and the underlying field is either inaccessible
+     *         or final.
      */
     public void configure(Object dst) {
         // Configure properties for this class and its superclasses
@@ -47,7 +52,7 @@ public class Configurator {
                                         f.setAccessible(true);
                                         try {
                                             f.set(dst, value);
-                                        } catch (IllegalAccessException e) {
+                                        } catch (NumberFormatException | IllegalAccessException e) {
                                             throw new ConfiguratorException(e);
                                         }
                                         f.setAccessible(isAcessible);

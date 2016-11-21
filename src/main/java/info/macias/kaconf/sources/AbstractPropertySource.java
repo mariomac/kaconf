@@ -1,5 +1,6 @@
 package info.macias.kaconf.sources;
 
+import info.macias.kaconf.ConfiguratorException;
 import info.macias.kaconf.PropertySource;
 
 import java.util.*;
@@ -8,7 +9,9 @@ import java.util.stream.Stream;
 import static java.util.AbstractMap.SimpleEntry;
 
 /**
- * Created by mmacias on 15/11/16.
+ * <p>Class that implements some basic functionalities of the {@link PropertySource} interface,
+ * such as converting string values to java basic types.</p>
+ * <p>Generally, new property sources should extend this class.</p>
  */
 public abstract class AbstractPropertySource implements PropertySource {
 
@@ -21,7 +24,7 @@ public abstract class AbstractPropertySource implements PropertySource {
         return new SimpleEntry<>(cClass, converter);
     }
 
-    protected Map<Class, Converter> converters = Collections.unmodifiableMap(Stream.of(
+    private Map<Class, Converter> converters = Collections.unmodifiableMap(Stream.of(
             entry(Byte.class, Byte::valueOf),
             entry(byte.class, Byte::valueOf),
             entry(Character.class, value -> value.charAt(0)),
@@ -40,18 +43,40 @@ public abstract class AbstractPropertySource implements PropertySource {
     ) .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
 
 
-    protected abstract String get(String key);
+    /**
+     * <p>Gets the string representation of a property whose name is defined by the <code>name</code> argument</p>
+     * <p>This method will be invoked by {@link #get(String, Class)} to transform the String value into
+     * a numeric/char value</p>
+     * @param name The name of the property to return
+     * @return The property stored for the given name, as a String, <code>null</code> if a property
+     * with such name does not exist
+     */
+    protected abstract String get(String name);
 
+    /**
+     * <p>Gets the value of the property whose name is defined by the <code>name</code> argument, transforming
+     * it to the type of the class passed as second argument.</p>
+     *
+     * <p>If the requested type cannot be converted, it will throw a {@link ConfiguratorException}. Other
+     * exceptions may raise, e.g. {@link NumberFormatException} when trying to convert an alphanumeric property
+     * into an <code>int</code>.</p>
+     *
+     * @param name The name of the property to return
+     * @param type The class object of the property to return
+     * @param <T> The returned type
+     * @return The property stored for the given name, as an instance of the given type, <code>null</code> if a property
+     * with such name does not exist
+     */
     @Override
-    public <T> T get(String key, Class<T> type) {
-        String strVal = get(key);
+    public <T> T get(String name, Class<T> type) {
+        String strVal = get(name);
         if(strVal == null) {
             return null;
         }
         @SuppressWarnings("unchecked")
         Converter<T> converter = converters.get(type);
         if(converter == null) {
-            throw new IllegalArgumentException("Cannot convert to type: " + type.getName());
+            throw new ConfiguratorException("Cannot convert to type: " + type.getName());
         }
         return converter.convert(strVal);
     }

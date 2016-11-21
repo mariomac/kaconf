@@ -13,3 +13,7 @@ Kickass Configuration system
 ## Inherited fields
 
 ## Adding custom PropertySources
+
+## Static fields
+
+## Final fields
