@@ -66,6 +66,9 @@ public abstract class AbstractPropertySource implements PropertySource {
      * @param <T> The returned type
      * @return The property stored for the given name, as an instance of the given type, <code>null</code> if a property
      * with such name does not exist
+     * @throws ConfiguratorException if an invalid type conversion has been intended (for example,
+     *         trying to return a non-basic, non-String type)
+     * @throws NumberFormatException or trying to convert an alphanumeric property value to a Number
      */
     @Override
     public <T> T get(String name, Class<T> type) {

@@ -2,7 +2,7 @@
 
 Kickass Configuration system
 
-[2016 Mario Macías](http://github.com/mariomac/fucoconf)
+[2016 Mario Macías](http://github.com/mariomac)
 
 ## About Kaconf
 
@@ -17,3 +17,10 @@ Kickass Configuration system
 ## Static fields
 
 ## Final fields
+
+## Static final fields
+
+    TO DO
+
+## Kotlin basic types support
+TO DO?

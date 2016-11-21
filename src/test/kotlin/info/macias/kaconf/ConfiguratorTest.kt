@@ -1,8 +1,7 @@
 package info.macias.kaconf
 
 import info.macias.kaconf.sources.AbstractPropertySource
-import info.macias.kaconf.test.ConfigurableClass
-import info.macias.kaconf.test.ConfigurableSubclass
+import info.macias.kaconf.test.*
 import junit.framework.TestCase
 import org.junit.Test
 import java.util.stream.Collectors
@@ -144,11 +143,44 @@ class ConfiguratorTest : TestCase("Test Configurator") {
 
     @Test
     fun testStaticValues() {
-        fail("TO DO")
+        ConfigurableClassWithStaticValues.STATIC_VALUE = 0
+
+        val obj = ConfigurableClassWithStaticValues()
+        val conf = ConfiguratorBuilder()
+                .addSource(MockedProperty())
+                .addSource(mapOf("normalvalue" to "normalvalue"))
+                .build()
+        conf.configure(obj)
+        assertEquals(obj.normalValue, "normalvalue")
+        assertEquals(ConfigurableClassWithStaticValues.STATIC_VALUE, 1234)
+        ConfigurableClassWithStaticValues.STATIC_VALUE = 0
+
+        // todo: add subclass and check static values of the superclass
+        conf.configure(ConfigurableSubClassWithStaticValues::class.java)
+        assertEquals(ConfigurableClassWithStaticValues.STATIC_VALUE, 1234)
+        assertEquals(ConfigurableSubClassWithStaticValues.getSubStaticValue(), -12)
 
     }
     @Test
     fun testFinalValues() {
-        fail("TO DO");
+        val obj = ConfigurableClassWithFinalValues()
+
+        val conf = ConfiguratorBuilder()
+                .addSource(mapOf(
+                        "finalValue" to 321,
+                        "finalStaticValue" to 123
+                ))
+                .build()
+
+        conf.configure(ConfigurableClassWithFinalValues::class.java)
+        conf.configure(obj)
+
+        assertEquals(obj.finalValue, 321)
+        //assertEquals(ConfigurableClassWithFinalValues.getSupposedlyConstant(), 123)
+
+    }
+    @Test
+    fun testFailsWithKotlinBasicTypes() {
+        fail("TO DO: si realmente falla, documentar o mirar de configurar para que funcione tambien con Kotlin")
     }
 }
