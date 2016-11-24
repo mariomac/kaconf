@@ -9,9 +9,15 @@ public class ConfigurableClassWithFinalValues {
     @Property("finalValue")
     public final int finalValue = 0;
 
-    // TODO: allow final static @Property("finalStaticValue")
-    private final static int SUPPOSEDLY_CONSTANT = 0;
+    @Property("finalStaticValue")
+    private final static int SUPPOSEDLY_CONSTANT = m();
 
+    @Property("finalStaticString")
+    public final static String SUPPOSEDLY_CONSTANT_STRING = null;
+
+    private final static int m() {
+        return 0;
+    }
     public static int getSupposedlyConstant() {
         return SUPPOSEDLY_CONSTANT;
     }

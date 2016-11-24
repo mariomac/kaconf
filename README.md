@@ -8,6 +8,10 @@ Kickass Configuration system
 
 ## Default Configurator behaviour
 
+* Numbers
+* Strings
+* Booleans
+
 ## Use builder for custom configurator behaviour
 
 ## Inherited fields
@@ -24,3 +28,7 @@ Kickass Configuration system
 
 ## Kotlin basic types support
 TO DO?
+
+## Future
+
+* Arrays of basic types and strings

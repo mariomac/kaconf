@@ -56,28 +56,70 @@ public class Configurator {
     }
 
     private void configure(Object dst, Class clazz) {
+        boolean areModifiersAccessible = true;
+        // TODO: if a security manager is present, make this not failing when the accesses to fields are permitted
+
+        Field modifiersField = null;
+        try {
+            modifiersField = Field.class.getDeclaredField("modifiers");
+            areModifiersAccessible = modifiersField.isAccessible();
+            modifiersField.setAccessible(true);
+        } catch (NoSuchFieldException e) {
+            throw new RuntimeException(e);
+        }
 
         for (Field f : clazz.getDeclaredFields()) {
-            Stream.of(f.getAnnotations())
-                    .filter(a -> a.annotationType().isAssignableFrom(Property.class))
-                    .map(a -> (Property) a)
-                    .findFirst()
-                    .ifPresent(
-                            p -> findPriorValue(p.value(), f.getType())
-                                    .ifPresent(value -> {
-                                        boolean isAcessible = f.isAccessible();
-                                        f.setAccessible(true);
+            int fieldModifiers = f.getModifiers();
+            if (dst != null || Modifier.isStatic(fieldModifiers)) {
 
-                                        try {
-                                            f.set(dst, value);
-                                        } catch (NumberFormatException | IllegalAccessException e) {
-                                            throw new ConfiguratorException(e);
-                                        }
+                // Make accessible final static members
+                boolean modifiersChanged = false;
+                try {
+                    if (Modifier.isStatic(fieldModifiers) && Modifier.isFinal(fieldModifiers)) {
+                        modifiersField.setInt(f, fieldModifiers & ~Modifier.FINAL);
+                        modifiersChanged = true;
+                    }
+                } catch (IllegalAccessException e) {
+                    throw new ConfiguratorException(e);
+                }
 
-                                        f.setAccessible(isAcessible);
-                                    })
-                    );
+                Stream.of(f.getAnnotations())
+                        .filter(a -> a.annotationType().isAssignableFrom(Property.class))
+                        .map(a -> (Property) a)
+                        .findFirst()
+                        .ifPresent(p ->
+                                findPriorValue(p.value(), f.getType())
+                                        .ifPresent(value -> {
+                                            boolean isAcessible = f.isAccessible();
+                                            if (!isAcessible) {
+                                                f.setAccessible(true);
+                                            }
+
+
+                                            try {
+                                                f.set(dst, value);
+                                            } catch (NumberFormatException | IllegalAccessException e) {
+                                                throw new ConfiguratorException(e);
+                                            }
+                                            if (!isAcessible) {
+                                                f.setAccessible(false);
+                                            }
+                                        })
+                        );
+
+                // Restore final static members
+                if (modifiersChanged) {
+                    try {
+                        modifiersField.setInt(f, fieldModifiers);
+                    }
+                    catch(IllegalAccessException e){
+                        throw new ConfiguratorException(e);
+                    }
+                }
+
+            }
         }
+        modifiersField.setAccessible(areModifiersAccessible);
     }
 
     private <T> Optional<T> findPriorValue(String key, Class<T> pType) {

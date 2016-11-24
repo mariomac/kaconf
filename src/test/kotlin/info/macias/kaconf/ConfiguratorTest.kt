@@ -153,9 +153,8 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         conf.configure(obj)
         assertEquals(obj.normalValue, "normalvalue")
         assertEquals(ConfigurableClassWithStaticValues.STATIC_VALUE, 1234)
-        ConfigurableClassWithStaticValues.STATIC_VALUE = 0
 
-        // todo: add subclass and check static values of the superclass
+        ConfigurableClassWithStaticValues.STATIC_VALUE = 0
         conf.configure(ConfigurableSubClassWithStaticValues::class.java)
         assertEquals(ConfigurableClassWithStaticValues.STATIC_VALUE, 1234)
         assertEquals(ConfigurableSubClassWithStaticValues.getSubStaticValue(), -12)
@@ -168,7 +167,8 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         val conf = ConfiguratorBuilder()
                 .addSource(mapOf(
                         "finalValue" to 321,
-                        "finalStaticValue" to 123
+                        "finalStaticValue" to 123,
+                        "finalStaticString" to "hello you"
                 ))
                 .build()
 
@@ -176,11 +176,40 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         conf.configure(obj)
 
         assertEquals(obj.finalValue, 321)
-        //assertEquals(ConfigurableClassWithFinalValues.getSupposedlyConstant(), 123)
+        assertEquals(ConfigurableClassWithFinalValues.getSupposedlyConstant(), 123)
+        assertEquals(ConfigurableClassWithFinalValues.SUPPOSEDLY_CONSTANT_STRING, "hello you")
 
     }
     @Test
     fun testFailsWithKotlinBasicTypes() {
         fail("TO DO: si realmente falla, documentar o mirar de configurar para que funcione tambien con Kotlin")
+    }
+
+    @Test
+    fun testBooleans() {
+        val conf = ConfiguratorBuilder()
+                .addSource(mapOf(
+                        "prop.true" to true,
+                        "prop.yes" to "yes",
+                        "prop.1" to 1,
+                        "prop.false" to false,
+                        "prop.0" to 0,
+                        "prop.no" to "no",
+                        "prop.anyOtherProperty" to "tralara"))
+                .build()
+
+        val obj1 = ConfigurableClassWithBooleans()
+        conf.configure(obj1)
+
+        assertTrue(obj1.trueProperty)
+        assertTrue(obj1.yesProperty)
+        assertTrue(obj1.oneProperty)
+        assertFalse(obj1.falseProperty)
+        assertFalse(obj1.zeroProperty)
+        assertFalse(obj1.noProperty)
+        assertFalse(obj1.anyOtherProperty)
+        assertFalse(obj1.hasToBeFalse)
+        assertNull(obj1.hasToBeNull)
+
     }
 }

@@ -24,7 +24,16 @@ public abstract class AbstractPropertySource implements PropertySource {
         return new SimpleEntry<>(cClass, converter);
     }
 
+    private static boolean convertBool(String str) {
+        if(str != null) {
+            str = str.trim().toLowerCase();
+            return str.equals("true") || str.equals("yes") || str.equals("1");
+        }
+        return false;
+    }
     private Map<Class, Converter> converters = Collections.unmodifiableMap(Stream.of(
+            entry(Boolean.class, AbstractPropertySource::convertBool),
+            entry(boolean.class, AbstractPropertySource::convertBool),
             entry(Byte.class, Byte::valueOf),
             entry(byte.class, Byte::valueOf),
             entry(Character.class, value -> value.charAt(0)),
