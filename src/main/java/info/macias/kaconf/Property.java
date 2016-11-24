@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * Annotation interface that indicates that a field will get its value from
- * a {@link Configurator} instance
+ * a {@link Configurator} instance.
+ *
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

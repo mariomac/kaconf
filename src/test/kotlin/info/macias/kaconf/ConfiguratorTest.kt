@@ -180,10 +180,6 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(ConfigurableClassWithFinalValues.SUPPOSEDLY_CONSTANT_STRING, "hello you")
 
     }
-    @Test
-    fun testFailsWithKotlinBasicTypes() {
-        fail("TO DO: si realmente falla, documentar o mirar de configurar para que funcione tambien con Kotlin")
-    }
 
     @Test
     fun testBooleans() {
@@ -210,6 +206,34 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertFalse(obj1.anyOtherProperty)
         assertFalse(obj1.hasToBeFalse)
         assertNull(obj1.hasToBeNull)
+    }
 
+    @Test
+    fun testKotlin() {
+        val obj = KonfigurableClass()
+        val conf = ConfiguratorBuilder()
+                .addSource(mapOf("publicint" to -44321,
+                        "privatebyte" to 3,
+                        "protectedstring" to "hi",
+                        "finalchar" to 'X',
+                        "finalstaticint" to 333444,
+                        "finalstaticstring" to "hello perraco",
+                        "aboolean" to true,
+                        "anint" to 6789))
+                .build()
+        conf.configure(obj)
+
+        assertEquals(obj.publicint, -44321)
+        assertEquals(obj.getPrivateByte(), 3)
+        assertEquals(obj.getProtectedString(), "hi")
+        assertEquals(obj.finalchar, 'X')
+        assertEquals(obj.propertynotfound, "default")
+        assertEquals(KonfigurableClass.finalstaticint,333444)
+        assertEquals(KonfigurableClass.finalstaticstring, "hello perraco")
+
+        conf.configure(KonfigurableObject)
+        assertTrue(KonfigurableObject.aboolean)
+        assertEquals(KonfigurableObject.anint,6789)
+        assertNull(KonfigurableObject.nonfoundproperty)
     }
 }

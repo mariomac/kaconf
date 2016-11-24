@@ -3,6 +3,10 @@ package info.macias.kaconf;
 /**
  * <p>Interface that defines the basic functionalities of a source of properties
  * (e.g. a {@link java.util.Map}, a {@link java.util.Properties} file, ...)</p>
+ * <p>Implementors of this interface should silently fail if the source of properties
+ * is not available during its instantiation (for example, a java properties file is not
+ * available. The class will be instantiated without throwing any exception and then the
+ * {@link #isAvailable()} method would return {@code false}</p>
  * <p>For a simpler use, implementing classes should better extend
  * {@link info.macias.kaconf.sources.AbstractPropertySource}</p> */
 public interface PropertySource {
