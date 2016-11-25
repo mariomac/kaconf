@@ -5,7 +5,7 @@ import info.macias.kaconf.Property;
 /**
  * Created by mmacias on 24/11/16.
  */
-public class ConfigurableClassWithBooleans {
+public class WithBooleans {
     @Property("prop.true")
     public boolean trueProperty;
 

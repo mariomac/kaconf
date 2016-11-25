@@ -5,7 +5,7 @@ import info.macias.kaconf.Property;
 /**
  * Created by mmacias on 21/11/16.
  */
-public class ConfigurableSubClassWithStaticValues extends ConfigurableClassWithStaticValues {
+public class WithStaticValuesSubClass extends WithStaticValues {
     @Property("subprivatebyte")
     private static byte SUB_STATIC_VALUE;
 

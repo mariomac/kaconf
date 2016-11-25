@@ -5,7 +5,7 @@ import info.macias.kaconf.Property;
 /**
  * Created by mmacias on 19/11/16.
  */
-public class ConfigurableClass {
+public class SomeClass {
     @Property("publicint")
     public int publicint;
     @Property("protectedstring")

@@ -6,7 +6,7 @@ import info.macias.kaconf.Property;
 /**
  * Created by mmacias on 21/11/16.
  */
-public class ConfigurableClassWithFinalValues {
+public class WithFinalValues {
     @Property("finalValue")
     public final int finalValue = 0;
 

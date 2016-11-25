@@ -4,7 +4,7 @@ KickAss Configuration system
 
 [2016 Mario Macías](http://github.com/mariomac)
 
-## About Kaconf
+## About KAConf
 
 KickAss Configuration system is an Annotation-based configuration system
 inspired in the wonderful [Spring Boot](http://spring.io) configuration
@@ -12,8 +12,8 @@ system.
 
 Quick demonstration of usage:
 
-* The `@Property` annotation allows you to define any field, whatever
-  its visibility is
+* The `@Property` annotation allows you to define any field that recevies
+  its value from a configuration source, whatever its visibility is.
 
         public class DbManager {
             @Property("db.username")
@@ -27,7 +27,7 @@ Quick demonstration of usage:
     
 * You can even define `final` and `static` fields, with default values.
   Properties that are both `final static` require to use the `Value.def`
-  or `Value.a[Type]` helper methods
+  or `Value.a[Type]` helper methods.
   
         import static info.macias.kaconf.Value.*
         
@@ -84,25 +84,158 @@ Quick demonstration of usage:
             }
         }     
 
-    
+## Building and using a `Configurator` object
 
+The `ConfiguratorBuilder` class allows building a `Configurator` object.
+The `ConfiguratorBuilder.addSource` method sets the different sources of
+properties (`PropertySource` interface). The `PropertySource` with most
+priority is the first instance passed as argument to the `addSource`
+method, and the `PropertySource` with least preference is the object passed
+to the last `addSource` invocation.
+
+Example of usage:
+
+    Configurator conf = new ConfiguratorBuilder()
+        .addSource(System.getenv()) // most priority
+        .addSource(System.getProperties())
+        .addSource(new JavaUtilPropertySource("app.properties"))
+        .addSource(new JavaUtilPropertySource( // least priority
+            getClass().getResourceAsStream("defaults.properties")
+        )).build():
+
+The `addSource` method accepts the next types as argument:
+
+* `java.util.Map<String,?>`
+* `java.util.Properties`
+* Any implementing class of the `PropertySource` interface. KAConf bundles
+  two helper implementations:
+    - `JavaUtilPropertySource`
+    - `MapPropertySource` 
+    
+Once a `Configurator` object is built, you can pass the configurable object
+(if object/class properties must be set) or class (if only static fields are
+willing to be set).
+
+    conf.configure(object);
+    conf.configure(Constants.class);
+    
 ## Default Configurator behaviour
 
-* Numbers
-* Strings
-* Booleans
+Given the next example properties:
 
-## Use builder for custom configurator behaviour
+        some.value=1234
+        some.other.value=yes
+
+* *Numbers*: any property that parses into a number is valid. If not,
+  the `Configurator.configure` will throw a `ConfiguratorException`:
+   
+        @Property("some.value")
+        private int someValue;       // correct
+        
+        @Property("some.other.value")
+        private int someOtherValue;  // throws ConfiguratorException
+  
+  If the property to look is not on the properties sources, the value
+  will remain as 0, or as the default one.
+  
+        @Property("value.not.found")
+        private int value1;           // will be 0
+    
+        @Property("value.not.found")
+        private int value2 = def(1000); // will be 1000 (default)
+        
+        //default valid for non-final & static primitive fields
+        @Property("value.not.found")
+        private int value3 = 1000;    // will be 1000 (default)
+
+* *Strings*: any property is valid. If the property is not found, the
+  value will be `null` or the default one.
+  
+        @Property("some.value")
+        private String someValue;        // value -> "1234"
+        
+        @Property("some.other.value")
+        private String someOtherValue;   // value -> "yes"
+  
+        @Property("value.not.found")
+        private String value1;           // value -> null
+    
+        @Property("value.not.found")
+        private String value2 = def(""); // value -> empty, non-null String
+        
+        //default valid for non-final & static primitive fields
+        @Property("value.not.found")
+        private String value3 = "";      // value -> empty, non-null String
+    
+* *Booleans*: any property whose string value exists and is `true`, `1`
+  or `yes` will be set as `true`. Otherwise will be `false`.
+
+        @Property("some.value")
+        private boolean someValue;       // value -> false
+        
+        @Property("some.other.value")
+        private boolean someOtherValue;  // value -> true
+        
+        @Property("value.not.found")
+        private boolean value1;          // value -> null
+        
+* *Chars*: the value of the property will be the first character of a string.
+  Any non-found property will set the value to '\0' or the default one.
+        
+* *Boxed primitive types*: boxed primitive types will behave as their
+  unboxed equivalents, but properties that are not found will get the
+  `null` default value.
+  
+        @Property("some.value")
+        private Integer intValue;     // value --> 1234
+
+        @Property("not.found.value")
+        private Integer nullableInt;  // value --> null
 
 ## Inherited fields
 
-## Adding custom PropertySources
+KAConf allows setting properties that are annotated in the superclass of the
+configurable object or class. For example:
+
+    public class Animal {
+        @Property("animal.name")
+        private final String name;
+    }
+    public class Dog extends Animal {
+        @Property("animal.species")
+        private final String species;
+    }
+    
+    public class PetShop {
+        Configurator conf = ...
+        public Animal buy() {
+            Dog puppy = new Dog();
+            conf.configure(puppy);
+            return puppy;
+        }
+    }
+    
+
+## Adding custom Property Sources
+
+Adding new Property Sources is simple. Usually is enough to extending the
+`AbstractPropertySource` class and implementing only two abstract methods:
+
+    protected String get(String name);
+    
+Which returns the string value of the property named according to the `name`
+argument.
+
+    boolean isAvailable();
+
+Which returns `true` if the properties have been successfully read from the
+source (e.g. a file or DB).
 
 ### PropertySources failing to load
 
-## Static fields
-
-## Final fields
+Any implementation of `PropertySource` is expected to fail silently (e.g. if
+it tries to read the values from a file that is not accessible), and then
+return `false` in the `isAvailable` method.
 
 ## Static final fields
 
@@ -114,3 +247,7 @@ TO DO?
 ## Future
 
 * Arrays of basic types and strings
+* Some refactoring of the `Configurator.configure` to be less _spaghetti_.
+* Analyse `Property` usages in compile time to warn the user about potential
+  issues (e.g. annotating a `final static` primitive value without using any
+  helper method from the `Value` class);

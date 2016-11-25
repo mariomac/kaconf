@@ -27,7 +27,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
 
     @Test
     fun testConfiguration() {
-        val obj = ConfigurableClass()
+        val obj = SomeClass()
         ConfiguratorBuilder()
                 .addSource(MockedProperty())
                 .build()
@@ -44,7 +44,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
 
     @Test
     fun testInheritedProperties() {
-        val obj = ConfigurableSubclass()
+        val obj = SomeSubclass()
         ConfiguratorBuilder()
                 .addSource(MockedProperty())
                 .build()
@@ -69,7 +69,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
 
     @Test
     fun testPropertyPreferences() {
-        val obj = ConfigurableSubclass()
+        val obj = SomeSubclass()
         ConfiguratorBuilder()
                 .addSource(mapOf(
                         "subprivatebyte" to "127",
@@ -107,7 +107,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
                 "privatebyte" to 1,
                 "publicint" to 333444
         )
-        val obj = ConfigurableSubclass()
+        val obj = SomeSubclass()
         ConfiguratorBuilder()
                 .addSource(env)
                 .addSource(properties)
@@ -143,26 +143,26 @@ class ConfiguratorTest : TestCase("Test Configurator") {
 
     @Test
     fun testStaticValues() {
-        ConfigurableClassWithStaticValues.STATIC_VALUE = 0
+        WithStaticValues.STATIC_VALUE = 0
 
-        val obj = ConfigurableClassWithStaticValues()
+        val obj = WithStaticValues()
         val conf = ConfiguratorBuilder()
                 .addSource(MockedProperty())
                 .addSource(mapOf("normalvalue" to "normalvalue"))
                 .build()
         conf.configure(obj)
         assertEquals(obj.normalValue, "normalvalue")
-        assertEquals(ConfigurableClassWithStaticValues.STATIC_VALUE, 1234)
+        assertEquals(WithStaticValues.STATIC_VALUE, 1234)
 
-        ConfigurableClassWithStaticValues.STATIC_VALUE = 0
-        conf.configure(ConfigurableSubClassWithStaticValues::class.java)
-        assertEquals(ConfigurableClassWithStaticValues.STATIC_VALUE, 1234)
-        assertEquals(ConfigurableSubClassWithStaticValues.getSubStaticValue(), -12)
+        WithStaticValues.STATIC_VALUE = 0
+        conf.configure(WithStaticValuesSubClass::class.java)
+        assertEquals(WithStaticValues.STATIC_VALUE, 1234)
+        assertEquals(WithStaticValuesSubClass.getSubStaticValue(), -12)
 
     }
     @Test
     fun testFinalValues() {
-        val obj = ConfigurableClassWithFinalValues()
+        val obj = WithFinalValues()
 
         val conf = ConfiguratorBuilder()
                 .addSource(mapOf(
@@ -172,12 +172,12 @@ class ConfiguratorTest : TestCase("Test Configurator") {
                 ))
                 .build()
 
-        conf.configure(ConfigurableClassWithFinalValues::class.java)
+        conf.configure(WithFinalValues::class.java)
         conf.configure(obj)
 
         assertEquals(obj.finalValue, 321)
-        assertEquals(ConfigurableClassWithFinalValues.getSupposedlyConstant(), 123)
-        assertEquals(ConfigurableClassWithFinalValues.SUPPOSEDLY_CONSTANT_STRING, "hello you")
+        assertEquals(WithFinalValues.getSupposedlyConstant(), 123)
+        assertEquals(WithFinalValues.SUPPOSEDLY_CONSTANT_STRING, "hello you")
 
     }
 
@@ -194,7 +194,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
                         "prop.anyOtherProperty" to "tralara"))
                 .build()
 
-        val obj1 = ConfigurableClassWithBooleans()
+        val obj1 = WithBooleans()
         conf.configure(obj1)
 
         assertTrue(obj1.trueProperty)
@@ -206,6 +206,34 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertFalse(obj1.anyOtherProperty)
         assertFalse(obj1.hasToBeFalse)
         assertNull(obj1.hasToBeNull)
+    }
+
+    @Test
+    fun testChars() {
+        class CharClass {
+            @Property("char1")
+            val char1 : Char = Value.def(',')
+            @Property("char2")
+            val char2 : Char = Value.def(',')
+            @Property("char3")
+            val char3 : Char = Value.def(',')
+            @Property("char4")
+            val char4 : Char = Value.def(',')
+        }
+        val conf = ConfiguratorBuilder()
+                .addSource(mapOf(
+                        "char1" to "X",
+                        "char2" to 'y',
+                        "char3" to "long string"))
+                .build()
+
+        val obj1 = CharClass()
+        conf.configure(obj1)
+
+        assertEquals(obj1.char1,'X')
+        assertEquals(obj1.char2,'y')
+        assertEquals(obj1.char3,'l')
+        assertEquals(obj1.char4,',')
     }
 
     @Test

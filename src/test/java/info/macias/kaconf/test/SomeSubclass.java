@@ -5,7 +5,7 @@ import info.macias.kaconf.Property;
 /**
  * Created by mmacias on 20/11/16.
  */
-public class ConfigurableSubclass extends ConfigurableClass {
+public class SomeSubclass extends SomeClass {
     @Property("subpublicint")
     public int subpublicint;
     @Property("subprotectedstring")
