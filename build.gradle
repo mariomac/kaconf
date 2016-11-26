@@ -1,5 +1,8 @@
+apply plugin: 'maven'
+apply plugin: 'signing'
+
 group 'info.macias'
-version '1.0-SNAPSHOT'
+version '0.8.0'
 
 task wrapper(type: Wrapper) {
   gradleVersion = '2.13'
@@ -30,3 +33,70 @@ dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
+signing {
+    sign configurations.archives
+}
+
+archivesBaseName = "kaconf"
+
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+
+            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                authentication(userName: ossrhUsername, password: ossrhPassword)
+            }
+
+            pom.project {
+                name 'KickAss Configuration system'
+                packaging 'jar'
+                // optionally artifactId can be defined here
+                description 'An annotation-based configuration system inspired in Spring-Boot'
+                url 'https://github.com/mariomac/kaconf'
+
+                scm {
+                     connection 'scm:git:git@github.com:mariomac/kaconf.git'
+                     developerConnection 'scm:git:git@github.com:mariomac/kaconf.git'
+                     url 'git@github.com:mariomac/jeasse.git'
+                }
+
+                licenses {
+                    license {
+                        name 'The Apache License, Version 2.0'
+                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+
+                developers {
+                    developer {
+                        id 'mariomac'
+                        name 'Mario Macias'
+                        email 'mario.macias.upc@gmail.com'
+                        url 'http://www.macias.info'
+                    }
+                }
+            }
+        }
+    }
+}
+
