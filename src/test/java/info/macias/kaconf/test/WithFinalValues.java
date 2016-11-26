@@ -1,6 +1,6 @@
 package info.macias.kaconf.test;
 
-import info.macias.kaconf.Value;
+import info.macias.kaconf.KA;
 import info.macias.kaconf.Property;
 
 /**
@@ -11,7 +11,7 @@ public class WithFinalValues {
     public final int finalValue = 0;
 
     @Property("finalStaticValue")
-    private final static int SUPPOSEDLY_CONSTANT = Value.anInt();
+    private final static int SUPPOSEDLY_CONSTANT = KA.anInt();
 
     @Property("finalStaticString")
     public final static String SUPPOSEDLY_CONSTANT_STRING = null;

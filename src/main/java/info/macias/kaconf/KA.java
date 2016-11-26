@@ -15,7 +15,7 @@ package info.macias.kaconf;
  * To deal with this, it is enough to define the final static field by assigning the output
  * of a trivial function, for example:</p>
  * <code>
- *     import static info.macias.kaconf.Value.*;
+ *     import static info.macias.kaconf.KA.*;
  *
  *     // ....
  *
@@ -29,7 +29,7 @@ package info.macias.kaconf;
  *     public static final int SERVICE_TIMEOUT = anInt()
  * </code>
  */
-public class Value {
+public class KA {
 
     /**
      * Specifies a default value

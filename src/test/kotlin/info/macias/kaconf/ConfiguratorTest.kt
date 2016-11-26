@@ -212,13 +212,13 @@ class ConfiguratorTest : TestCase("Test Configurator") {
     fun testChars() {
         class CharClass {
             @Property("char1")
-            val char1 : Char = Value.def(',')
+            val char1 : Char = KA.def(',')
             @Property("char2")
-            val char2 : Char = Value.def(',')
+            val char2 : Char = KA.def(',')
             @Property("char3")
-            val char3 : Char = Value.def(',')
+            val char3 : Char = KA.def(',')
             @Property("char4")
-            val char4 : Char = Value.def(',')
+            val char4 : Char = KA.def(',')
         }
         val conf = ConfiguratorBuilder()
                 .addSource(mapOf(

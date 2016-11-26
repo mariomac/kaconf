@@ -2,6 +2,8 @@
 
 KickAss Configuration system
 
+v0.8.0
+
 [2016 Mario Macías](http://github.com/mariomac)
 
 ## About KAConf
@@ -26,10 +28,10 @@ Quick demonstration of usage:
         }
     
 * You can even define `final` and `static` fields, with default values.
-  Properties that are both `final static` require to use the `Value.def`
-  or `Value.a[Type]` helper methods.
+  Properties that are both `final static` require to use the `KA.def`
+  or `KA.a[Type]` helper methods.
   
-        import static info.macias.kaconf.Value.*
+        import static info.macias.kaconf.KA.*
         
         public class Constants {
             @Property("timeout")
@@ -237,17 +239,64 @@ Any implementation of `PropertySource` is expected to fail silently (e.g. if
 it tries to read the values from a file that is not accessible), and then
 return `false` in the `isAvailable` method.
 
-## Static final fields
+## `Static final` fields
 
-    TO DO
+Because of the way the Java compiler inlines the `static final` fields of
+primitive types, it is
+necessary to assign the result of any method call to the declaration of the
+field. The `KA` class provides some simple functions to allow that. For example:
+
+    @Property("some.property")
+    public static final int SOME_PROPERTY = KA.def(1234) // default value
+    
+    @Property("other.property")
+    protected static final byte OTHER_PROPERTY = KA.aByte(); //defaults to 0
 
 ## Kotlin basic types support
-TO DO?
 
-## Future
+As my favourite programming language, [Kotlin](https://kotlinlang.org/) is a first-class citizen in KAConf, and
+it is fully supported out of the box.
+
+    class KonfigurableClass {
+        @Property("publicint")
+        var publicint = KA.def(321)
+    
+        @Property("finalchar")
+        val finalchar = KA.def('a')
+    
+        companion object {
+            @Property("finalstaticint")
+            val finalstaticint: Int = 0
+        }
+    }
+    
+    
+    object KonfigurableObject {
+        @Property("aboolean")
+        val aboolean = KA.aBoolean()
+    
+        @Property("anint")
+        var anint: Int? = null
+    }
+
+
+Other JVM languages (Scala, Groovy, Ceylon...) have not been tested. ¿Maybe you
+can test them for me and tell us the results? :wink:
+
+## Next steps
+
+There are still some potential improvements of interest in KAConf.
+
+### To implement in v0.8.1
+
+* Some refactoring of the `Configurator.configure` code to be less _spaghetti_ and
+  more efficient
+  
+### To implement in v0.9
 
 * Arrays of basic types and strings
-* Some refactoring of the `Configurator.configure` to be less _spaghetti_.
 * Analyse `Property` usages in compile time to warn the user about potential
   issues (e.g. annotating a `final static` primitive value without using any
-  helper method from the `Value` class);
+  helper method from the `KA` class);
+* Specify mandatory properties (`Configurator` will throw and exception if
+  the property is not found)
