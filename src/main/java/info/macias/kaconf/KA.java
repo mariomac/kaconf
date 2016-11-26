@@ -1,3 +1,18 @@
+/*
+    Copyright 2016 Mario Macías
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+*/
 package info.macias.kaconf;
 
 /**
@@ -5,29 +20,29 @@ package info.macias.kaconf;
  * in this class can be also used to provide more semantic information to other types of
  * fields.</p>
  * <p>The motivation of this class is to deal with cases such as the next:</p>
- * <code>
+ * <pre>
  *     // Defaults to 1000
  *     \@Property("service.timeout")
  *     public static final int SERVICE_TIMEOUT = 1000;
- * </code>
+ * </pre>
  * <p>Java compiler will always inline the 1000 value in any access to the {@code SERVICE_TIMEOUT}
  * field, so even if there is a property overriding this value, the actual value will always be 1000.
  * To deal with this, it is enough to define the final static field by assigning the output
  * of a trivial function, for example:</p>
- * <code>
+ * <pre>
  *     import static info.macias.kaconf.KA.*;
  *
  *     // ....
  *
  *     \@Property("service.timeout")
  *     public static final int SERVICE_TIMEOUT = def(1000);
- * </code>
+ * </pre>
  *
  * <p>If no default value wants to be provided, it is also needed to specify the type of the field:</p>
- * <code>
+ * <pre>
  *     \@Property("service.timeout")
  *     public static final int SERVICE_TIMEOUT = anInt()
- * </code>
+ * </pre>
  */
 public class KA {
 

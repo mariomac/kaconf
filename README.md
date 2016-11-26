@@ -8,9 +8,8 @@ v0.8.0
 
 ## About KAConf
 
-KickAss Configuration system is an Annotation-based configuration system
-inspired in the wonderful [Spring Boot](http://spring.io) configuration
-system.
+_KickAss_ is an Annotation-based configuration system
+inspired in the wonderful [Spring Boot](http://spring.io).
 
 Quick demonstration of usage:
 
