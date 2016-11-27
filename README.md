@@ -6,6 +6,8 @@ v0.8.0
 
 [2016 Mario Macías](http://github.com/mariomac)
 
+[![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
+
 ## About KAConf
 
 _KickAss_ is an Annotation-based configuration system
