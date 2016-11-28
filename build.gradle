@@ -52,7 +52,9 @@ signing {
     sign configurations.archives
 }
 
+group = "info.macias"
 archivesBaseName = "kaconf"
+version = "0.8.0"
 
 uploadArchives {
     repositories {
