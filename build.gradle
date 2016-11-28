@@ -77,7 +77,7 @@ uploadArchives {
                 scm {
                      connection 'scm:git:git@github.com:mariomac/kaconf.git'
                      developerConnection 'scm:git:git@github.com:mariomac/kaconf.git'
-                     url 'git@github.com:mariomac/jeasse.git'
+                     url 'git@github.com:mariomac/kaconf.git'
                 }
 
                 licenses {
