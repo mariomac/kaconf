@@ -18,74 +18,82 @@ Quick demonstration of usage:
 * The `@Property` annotation allows you to define any field that recevies
   its value from a configuration source, whatever its visibility is.
 
-        public class DbManager {
-            @Property("db.username")
-            private String user;
-            
-            @Property("db.password")
-            private String password;
-                  
-            // ...
-        }
-    
+```Java
+public class DbManager {
+    @Property("db.username")
+    private String user;
+
+    @Property("db.password")
+    private String password;
+
+    // ...
+}
+```
+
 * You can even define `final` and `static` fields, with default values.
   Properties that are both `final static` require to use the `KA.def`
   or `KA.a[Type]` helper methods.
   
-        import static info.macias.kaconf.KA.*
-        
-        public class Constants {
-            @Property("timeout")
-            public static final long TIMEOUT_MS = def(1000); // default=1000
-            
-            @Property("security.enabled")
-            public static final boolean SECURITY_ENABLED = aBoolean();
-        }
+```Java
+import static info.macias.kaconf.KA.*
+
+public class Constants {
+    @Property("timeout")
+    public static final long TIMEOUT_MS = def(1000); // default=1000
+
+    @Property("security.enabled")
+    public static final boolean SECURITY_ENABLED = aBoolean();
+}
+```
 
 * The `Configurator.configure` method will automatically set the values
   from its configuration sources. You can build a `Configurator` object
   with multiple sources and different priorities.
 
-        public class SomeController {
-            private DbManager dbm;
-            
-            public void start() {
-                Configurator conf = new ConfiguratorBuilder()
-                    .addSource(System.getenv()) // most priority
-                    .addSource(System.getProperties())
-                    .addSource(new JavaUtilPropertySource("app.properties"))
-                    .addSource(new JavaUtilPropertySource( // least priority
-                        getClass().getResourceAsStream("defaults.properties")
-                    )).build():
-                    
-                conf.configure(Constants.class);
-                conf.configure(dbm);
-            }
-        }
+```Java
+public class SomeController {
+    private DbManager dbm;
+
+    public void start() {
+        Configurator conf = new ConfiguratorBuilder()
+            .addSource(System.getenv()) // most priority
+            .addSource(System.getProperties())
+            .addSource(new JavaUtilPropertySource("app.properties"))
+            .addSource(new JavaUtilPropertySource( // least priority
+                getClass().getResourceAsStream("defaults.properties")
+            )).build():
+
+        conf.configure(Constants.class);
+        conf.configure(dbm);
+    }
+}
+```
     
 * It's easy to hardcode configuration for testing purposes.
    
-        public class TestSuite {
+```Java   
+public class TestSuite {
 
-            DbManager dbm = new DbManager();
+    DbManager dbm = new DbManager();
 
-            public void setUp() {
-                 
-                Map<String,String> customProperties = new HashMap<>();
-                customProperties.put("db.username","admin");
-                customProperties.put("db.password","1234");
-                customProperties.put("security.enabled", "false");
-                
-                Configurator conf = new ConfiguratorBuilder()
-                    .addSource(customProperties)
-                    .addSource(new JavaUtilPropertySource(
-                        getClass().getResourceAsStream("defaults.properties")
-                    )).build():
-                    
-                conf.configure(Constants.class);                    
-                conf.configure(dbm);
-            }
-        }     
+    public void setUp() {
+
+        Map<String,String> customProperties = new HashMap<>();
+        customProperties.put("db.username","admin");
+        customProperties.put("db.password","1234");
+        customProperties.put("security.enabled", "false");
+
+        Configurator conf = new ConfiguratorBuilder()
+            .addSource(customProperties)
+            .addSource(new JavaUtilPropertySource(
+                getClass().getResourceAsStream("defaults.properties")
+            )).build():
+
+        conf.configure(Constants.class);                    
+        conf.configure(dbm);
+    }
+}     
+```
 
 ## Building and using a `Configurator` object
 
@@ -98,13 +106,15 @@ to the last `addSource` invocation.
 
 Example of usage:
 
-    Configurator conf = new ConfiguratorBuilder()
-        .addSource(System.getenv()) // most priority
-        .addSource(System.getProperties())
-        .addSource(new JavaUtilPropertySource("app.properties"))
-        .addSource(new JavaUtilPropertySource( // least priority
-            getClass().getResourceAsStream("defaults.properties")
-        )).build():
+```Java
+Configurator conf = new ConfiguratorBuilder()
+    .addSource(System.getenv()) // most priority
+    .addSource(System.getProperties())
+    .addSource(new JavaUtilPropertySource("app.properties"))
+    .addSource(new JavaUtilPropertySource( // least priority
+        getClass().getResourceAsStream("defaults.properties")
+    )).build():
+```
 
 The `addSource` method accepts the next types as argument:
 
@@ -119,9 +129,11 @@ Once a `Configurator` object is built, you can pass the configurable object
 (if object/class properties must be set) or class (if only static fields are
 willing to be set).
 
-    conf.configure(object);
-    conf.configure(Constants.class);
-    
+```Java
+conf.configure(object);
+conf.configure(Constants.class);
+```
+
 ## Default Configurator behaviour
 
 Given the next example properties:
@@ -132,56 +144,64 @@ Given the next example properties:
 * *Numbers*: any property that parses into a number is valid. If not,
   the `Configurator.configure` will throw a `ConfiguratorException`:
    
-        @Property("some.value")
-        private int someValue;       // correct
-        
-        @Property("some.other.value")
-        private int someOtherValue;  // throws ConfiguratorException
-  
+```Java
+@Property("some.value")
+private int someValue;       // correct
+
+@Property("some.other.value")
+private int someOtherValue;  // throws ConfiguratorException
+```
+
   If the property to look is not on the properties sources, the value
   will remain as 0, or as the default one.
   
-        @Property("value.not.found")
-        private int value1;           // will be 0
-    
-        @Property("value.not.found")
-        private int value2 = def(1000); // will be 1000 (default)
-        
-        //default valid for non-final & static primitive fields
-        @Property("value.not.found")
-        private int value3 = 1000;    // will be 1000 (default)
+```Java
+@Property("value.not.found")
+private int value1;           // will be 0
+
+@Property("value.not.found")
+private int value2 = def(1000); // will be 1000 (default)
+
+//default valid for non-final & static primitive fields
+@Property("value.not.found")
+private int value3 = 1000;    // will be 1000 (default)
+```
 
 * *Strings*: any property is valid. If the property is not found, the
   value will be `null` or the default one.
   
-        @Property("some.value")
-        private String someValue;        // value -> "1234"
-        
-        @Property("some.other.value")
-        private String someOtherValue;   // value -> "yes"
-  
-        @Property("value.not.found")
-        private String value1;           // value -> null
-    
-        @Property("value.not.found")
-        private String value2 = def(""); // value -> empty, non-null String
-        
-        //default valid for non-final & static primitive fields
-        @Property("value.not.found")
-        private String value3 = "";      // value -> empty, non-null String
-    
+```Java
+@Property("some.value")
+private String someValue;        // value -> "1234"
+
+@Property("some.other.value")
+private String someOtherValue;   // value -> "yes"
+
+@Property("value.not.found")
+private String value1;           // value -> null
+
+@Property("value.not.found")
+private String value2 = def(""); // value -> empty, non-null String
+
+//default valid for non-final & static primitive fields
+@Property("value.not.found")
+private String value3 = "";      // value -> empty, non-null String
+```
+
 * *Booleans*: any property whose string value exists and is `true`, `1`
   or `yes` will be set as `true`. Otherwise will be `false`.
 
-        @Property("some.value")
-        private boolean someValue;       // value -> false
-        
-        @Property("some.other.value")
-        private boolean someOtherValue;  // value -> true
-        
-        @Property("value.not.found")
-        private boolean value1;          // value -> null
-        
+```Java
+@Property("some.value")
+private boolean someValue;       // value -> false
+
+@Property("some.other.value")
+private boolean someOtherValue;  // value -> true
+
+@Property("value.not.found")
+private boolean value1;          // value -> null
+```
+
 * *Chars*: the value of the property will be the first character of a string.
   Any non-found property will set the value to '\0' or the default one.
         
@@ -189,35 +209,38 @@ Given the next example properties:
   unboxed equivalents, but properties that are not found will get the
   `null` default value.
   
-        @Property("some.value")
-        private Integer intValue;     // value --> 1234
+```Java
+@Property("some.value")
+private Integer intValue;     // value --> 1234
 
-        @Property("not.found.value")
-        private Integer nullableInt;  // value --> null
+@Property("not.found.value")
+private Integer nullableInt;  // value --> null
+```
 
 ## Inherited fields
 
 KAConf allows setting properties that are annotated in the superclass of the
 configurable object or class. For example:
 
-    public class Animal {
-        @Property("animal.name")
-        private final String name;
+```Java
+public class Animal {
+    @Property("animal.name")
+    private final String name;
+}
+public class Dog extends Animal {
+    @Property("animal.species")
+    private final String species;
+}
+
+public class PetShop {
+    Configurator conf = ...
+    public Animal buy() {
+        Dog puppy = new Dog();
+        conf.configure(puppy);
+        return puppy;
     }
-    public class Dog extends Animal {
-        @Property("animal.species")
-        private final String species;
-    }
-    
-    public class PetShop {
-        Configurator conf = ...
-        public Animal buy() {
-            Dog puppy = new Dog();
-            conf.configure(puppy);
-            return puppy;
-        }
-    }
-    
+}
+```
 
 ## Adding custom Property Sources
 
@@ -247,39 +270,41 @@ primitive types, it is
 necessary to assign the result of any method call to the declaration of the
 field. The `KA` class provides some simple functions to allow that. For example:
 
-    @Property("some.property")
-    public static final int SOME_PROPERTY = KA.def(1234) // default value
-    
-    @Property("other.property")
-    protected static final byte OTHER_PROPERTY = KA.aByte(); //defaults to 0
+```Java
+@Property("some.property")
+public static final int SOME_PROPERTY = KA.def(1234) // default value
+
+@Property("other.property")
+protected static final byte OTHER_PROPERTY = KA.aByte(); //defaults to 0
+```
 
 ## Kotlin basic types support
 
 As my favourite programming language, [Kotlin](https://kotlinlang.org/) is a first-class citizen in KAConf, and
 it is fully supported out of the box.
 
-    class KonfigurableClass {
-        @Property("publicint")
-        var publicint = KA.def(321)
-    
-        @Property("finalchar")
-        val finalchar = KA.def('a')
-    
-        companion object {
-            @Property("finalstaticint")
-            val finalstaticint: Int = 0
-        }
-    }
-    
-    
-    object KonfigurableObject {
-        @Property("aboolean")
-        val aboolean = KA.aBoolean()
-    
-        @Property("anint")
-        var anint: Int? = null
-    }
+```Kotlin
+class KonfigurableClass {
+    @Property("publicint")
+    var publicint = KA.def(321)
 
+    @Property("finalchar")
+    val finalchar = KA.def('a')
+
+    companion object {
+        @Property("finalstaticint")
+        val finalstaticint: Int = 0
+    }
+}
+
+object KonfigurableObject {
+    @Property("aboolean")
+    val aboolean = KA.aBoolean()
+
+    @Property("anint")
+    var anint: Int? = null
+}
+```
 
 Other JVM languages (Scala, Groovy, Ceylon...) have not been tested. ¿Maybe you
 can test them for me and tell us the results? :wink:
