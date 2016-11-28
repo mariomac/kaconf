@@ -71,7 +71,7 @@ uploadArchives {
                 name 'KickAss Configuration system'
                 packaging 'jar'
                 // optionally artifactId can be defined here
-                description 'An annotation-based configuration system inspired in Spring-Boot'
+                description 'An annotation-based configuration system for Java and Kotlin'
                 url 'https://github.com/mariomac/kaconf'
 
                 scm {
