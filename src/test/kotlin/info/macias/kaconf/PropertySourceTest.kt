@@ -54,7 +54,7 @@ class PropertySourceTest : TestCase("Test Property Sources") {
 
         try {
             properties.get("b", Object::class.java)
-        } catch (e:IllegalArgumentException) {
+        } catch (e:ConfiguratorException) {
             illegalArgumentExceptionThrown = true;
         }
         assert(illegalArgumentExceptionThrown)
