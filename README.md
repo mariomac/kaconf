@@ -1,12 +1,18 @@
-# KAConf
+# KAConf [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
-KickAss Configuration system
-
-v0.8.0
+KickAss Configuration system v0.8.2
 
 [2016 Mario Macías](http://github.com/mariomac)
 
-[![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
+Maven coordinates:
+
+```XML
+<dependency>
+    <groupId>info.macias</groupId>
+    <artifactId>kaconf</artifactId>
+    <version>0.8.2</version>
+</dependency>
+```
 
 ## About KAConf
 
@@ -326,3 +332,5 @@ There are still some potential improvements of interest in KAConf.
   helper method from the `KA` class);
 * Specify mandatory properties (`Configurator` will throw and exception if
   the property is not found)
+
+
