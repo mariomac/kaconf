@@ -4,16 +4,6 @@ KickAss Configuration system v0.8.2
 
 [2016 Mario Macías](http://github.com/mariomac)
 
-Maven coordinates:
-
-```XML
-<dependency>
-    <groupId>info.macias</groupId>
-    <artifactId>kaconf</artifactId>
-    <version>0.8.2</version>
-</dependency>
-```
-
 ## About KAConf
 
 _KickAss_ is an Annotation-based configuration system
@@ -22,8 +12,18 @@ inspired in the wonderful [Spring Boot](http://spring.io).
 Its strong points are:
 
 * Easy to use, integrate and extend
-* Small footprint: a single, 23KB JAR with no third-party dependencies
+* Tiny footprint: a single, 23KB JAR with no third-party dependencies
 * Born from own's necessity, with no over-engineered use cases
+
+### Maven coordinates:
+
+```XML
+<dependency>
+    <groupId>info.macias</groupId>
+    <artifactId>kaconf</artifactId>
+    <version>0.8.2</version>
+</dependency>
+```
 
 ### Quick demonstration of usage
 
@@ -325,7 +325,7 @@ can test them for me and tell us the results? :wink:
 
 There are still some potential improvements of interest in KAConf.
 
-### To implement in v0.8.1
+### To implement in v0.8.4
 
 * Some refactoring of the `Configurator.configure` code to be less _spaghetti_ and
   more efficient
