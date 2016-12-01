@@ -19,7 +19,13 @@ Maven coordinates:
 _KickAss_ is an Annotation-based configuration system
 inspired in the wonderful [Spring Boot](http://spring.io).
 
-Quick demonstration of usage:
+Its strong points are:
+
+* Easy to use, integrate and extend
+* Small footprint: a single, 23KB JAR with no third-party dependencies
+* Born from own's necessity, with no over-engineered use cases
+
+### Quick demonstration of usage
 
 * The `@Property` annotation allows you to define any field that recevies
   its value from a configuration source, whatever its visibility is.
