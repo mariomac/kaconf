@@ -329,7 +329,8 @@ There are still some potential improvements of interest in KAConf.
 
 * Some refactoring of the `Configurator.configure` code to be less _spaghetti_ and
   more efficient
-  
+* Allow multiple names for a property, e.g.: `@Property("user.name", "USER_NAME")`
+
 ### To implement in v0.9
 
 * Arrays of basic types and strings
