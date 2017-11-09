@@ -2,7 +2,7 @@
 
 KickAss Configuration system v0.8.2
 
-[2016 Mario Macías](http://github.com/mariomac)
+[2016-2017 Mario Macías](http://github.com/mariomac)
 
 ## About KAConf
 
