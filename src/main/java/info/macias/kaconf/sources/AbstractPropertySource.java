@@ -18,6 +18,8 @@ package info.macias.kaconf.sources;
 import info.macias.kaconf.ConfiguratorException;
 import info.macias.kaconf.PropertySource;
 
+import java.net.URI;
+import java.net.URL;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -63,7 +65,8 @@ public abstract class AbstractPropertySource implements PropertySource {
             entry(float.class, Float::valueOf),
             entry(Double.class, Double::valueOf),
             entry(double.class, Double::valueOf),
-            entry(String.class, value->value)
+            entry(String.class, value->value),
+            entry(URI.class, URI::create)
     ) .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
 
 

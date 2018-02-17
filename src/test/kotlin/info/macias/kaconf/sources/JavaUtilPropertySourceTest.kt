@@ -1,10 +1,10 @@
 package info.macias.kaconf.sources
 
-import info.macias.kaconf.Configurator
 import info.macias.kaconf.ConfiguratorBuilder
 import info.macias.kaconf.Property
 import org.junit.Test
 import java.io.File
+import java.net.URI
 import java.net.URL
 import kotlin.test.assertEquals
 
@@ -14,6 +14,9 @@ class JavaUtilPropertySourceTest {
 
         @Property("project.name")
         var name: String? = null
+
+        @Property("project.uri")
+        val uri: URI? = null
     }
 
     @Test
@@ -30,6 +33,7 @@ class JavaUtilPropertySourceTest {
         configurator.configure(project)
 
         assertEquals("kaconf", project.name)
+        assertEquals("https://github.com/mariomac/kaconf", project.uri)
     }
 
     @Test
@@ -45,5 +49,6 @@ class JavaUtilPropertySourceTest {
         configurator.configure(project)
 
         assertEquals("kaconf", project.name)
+        assertEquals("https://github.com/mariomac/kaconf", project.uri)
     }
 }
