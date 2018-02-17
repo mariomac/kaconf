@@ -15,6 +15,7 @@
 */
 package info.macias.kaconf.sources;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
     private Properties properties;
 
     /**
-     * <p>Instantiates the class by loading a {@link java.util.Properties} specified as argument.</p>
+     * <p>Instantiates the class by loading the File specified as argument.</p>
      * <p>If the {@link java.util.Properties} cannot be loaded (e.g. because the file does not exist or
      * the user does not have permissions), no exceptions will be thrown and the object will be
      * instantiated anyway. However, the {@link JavaUtilPropertySource#isAvailable()} method will
@@ -36,12 +37,29 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
      * @param filePath The path to reach the Properties file.
      */
     public JavaUtilPropertySource(String filePath) {
-        try(FileInputStream fis = new FileInputStream(filePath)) {
-            properties.load(fis);
+        this(new File(filePath));
+    }
+
+    /**
+     * <p>Instantiates the class by loading the File specified as argument.</p>
+     * <p>If the {@link java.util.Properties} cannot be loaded (e.g. because the file does not exist or
+     * the user does not have permissions), no exceptions will be thrown and the object will be
+     * instantiated anyway. However, the {@link JavaUtilPropertySource#isAvailable()} method will
+     * return <code>false</code>.</p>
+     * @param filePath The path to reach the Properties file.
+     */
+    public JavaUtilPropertySource(File file) {
+        if (file == null || !file.isFile())
+            throw new IllegalArgumentException("'" + file + "' is not a valid file.");
+        try(FileInputStream fis = new FileInputStream(file)) {
+            Properties props = new Properties();
+            props.load(fis);
+            properties = props;
         } catch (IOException e) {
             properties = null;
         }
     }
+
     /**
      * <p>Instantiates the class by loading the {@link java.util.Properties} object that is
      * reachable by the {@link InputStream} specified as argument</p>
@@ -53,7 +71,9 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
      */
     public JavaUtilPropertySource(InputStream is) {
         try {
-            properties.load(is);
+            Properties props = new Properties();
+            props.load(is);
+            properties = props;
         } catch (NullPointerException | IOException e) {
             properties = null;
         }
