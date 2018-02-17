@@ -15,7 +15,6 @@
 */
 package info.macias.kaconf.sources;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -23,10 +22,11 @@ import java.util.Map;
  * {@link info.macias.kaconf.PropertySource} interface
  */
 public class MapPropertySource extends AbstractPropertySource {
-    private Map<String, ?> properties = new HashMap<>();
+    private Map<String, ?> properties;
 
     /**
      * Instantiates the class by providing a map with the property values
+     *
      * @param properties The properties to access later
      */
     public MapPropertySource(Map<String, ?> properties) {
@@ -47,6 +47,9 @@ public class MapPropertySource extends AbstractPropertySource {
      */
     @Override
     protected String get(String key) {
+        if (!isAvailable()) {
+            return null;
+        }
         Object val = properties.get(key);
         return val == null ? null : val.toString();
     }

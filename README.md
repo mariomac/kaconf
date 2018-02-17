@@ -1,6 +1,6 @@
 # KAConf [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
-KickAss Configuration system v0.8.2
+KickAss Configuration system v0.8.4
 
 [2016-2017 Mario Macías](http://github.com/mariomac)
 
@@ -21,7 +21,7 @@ Its strong points are:
 <dependency>
     <groupId>info.macias</groupId>
     <artifactId>kaconf</artifactId>
-    <version>0.8.2</version>
+    <version>0.8.4</version>
 </dependency>
 ```
 

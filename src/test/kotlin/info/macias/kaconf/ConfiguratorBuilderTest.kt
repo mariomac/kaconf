@@ -2,8 +2,6 @@ package info.macias.kaconf
 
 import info.macias.kaconf.sources.JavaUtilPropertySource
 import junit.framework.TestCase
-import org.junit.Test
-import java.io.FileInputStream
 
 /**
  * Created by mmacias on 16/11/16.
@@ -11,6 +9,25 @@ import java.io.FileInputStream
 class ConfiguratorBuilderTest : TestCase("Test Configurator Builder") {
 
     fun testInvalidBuild() {
+        assertTrue(try {
+            ConfiguratorBuilder().build()
+            false
+        } catch (e:ConfiguratorException) {
+            true
+        })
+
+        assertTrue(try {
+            ConfiguratorBuilder()
+                    .addSource(JavaUtilPropertySource.from("someUnexistentFile.txt"))
+                    .addSource(JavaUtilPropertySource.from(javaClass.getResourceAsStream("UnexistentResource.txt")))
+                    .build()
+            false
+        } catch(e:ConfiguratorException) {
+            true
+        })
+    }
+
+    fun testInvalidBuildDeprecatedConstructors() {
         assertTrue(try {
             ConfiguratorBuilder().build()
             false
@@ -28,6 +45,5 @@ class ConfiguratorBuilderTest : TestCase("Test Configurator Builder") {
             true
         })
     }
-
 
 }

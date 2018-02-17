@@ -2,15 +2,15 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group 'info.macias'
-version '0.8.2'
+version '0.8.4'
 
 task wrapper(type: Wrapper) {
-  gradleVersion = '2.13'
-  distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+    gradleVersion = '2.13'
+    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.5-2'
+    ext.kotlin_version = '1.0.7'
 
     repositories {
         mavenCentral()
@@ -33,6 +33,7 @@ repositories {
 
 dependencies {
     testCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    testCompile "org.jetbrains.kotlin:kotlin-test:$kotlin_version"
     testCompile group: 'junit', name: 'junit', version: '4.11'
 }
 
@@ -56,9 +57,7 @@ signing {
     }
 }
 
-group = "info.macias"
-archivesBaseName = "kaconf"
-version = "0.8.2"
+archivesBaseName = project.name
 
 if (project.hasProperty('deploy')) {
     uploadArchives {

@@ -19,10 +19,11 @@ import info.macias.kaconf.ConfiguratorException;
 import info.macias.kaconf.PropertySource;
 
 import java.net.URI;
-import java.net.URL;
-import java.util.*;
+import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
 import static java.util.AbstractMap.SimpleEntry;
 
 /**
@@ -37,17 +38,18 @@ public abstract class AbstractPropertySource implements PropertySource {
         C convert(String value);
     }
 
-    private static <C> SimpleEntry<Class<C>,Converter<C>> entry(Class<C> cClass, Converter<C> converter) {
+    private static <C> SimpleEntry<Class<C>, Converter<C>> entry(Class<C> cClass, Converter<C> converter) {
         return new SimpleEntry<>(cClass, converter);
     }
 
     private static boolean convertBool(String str) {
-        if(str != null) {
+        if (str != null) {
             str = str.trim().toLowerCase();
             return str.equals("true") || str.equals("yes") || str.equals("1");
         }
         return false;
     }
+
     private Map<Class, Converter> converters = Collections.unmodifiableMap(Stream.of(
             entry(Boolean.class, AbstractPropertySource::convertBool),
             entry(boolean.class, AbstractPropertySource::convertBool),
@@ -65,18 +67,19 @@ public abstract class AbstractPropertySource implements PropertySource {
             entry(float.class, Float::valueOf),
             entry(Double.class, Double::valueOf),
             entry(double.class, Double::valueOf),
-            entry(String.class, value->value),
+            entry(String.class, value -> value),
             entry(URI.class, URI::create)
-    ) .collect(Collectors.toMap((e) -> e.getKey(), (e) -> e.getValue())));
+    ).collect(Collectors.toMap(SimpleEntry::getKey, SimpleEntry::getValue)));
 
 
     /**
      * <p>Gets the string representation of a property whose name is defined by the <code>name</code> argument</p>
      * <p>This method will be invoked by {@link #get(String, Class)} to transform the String value into
      * a numeric/char value</p>
+     *
      * @param name The name of the property to return
      * @return The property stored for the given name, as a String, <code>null</code> if a property
-     * with such name does not exist
+     * with such name does not exist or the property source is not available.
      */
     protected abstract String get(String name);
 
@@ -90,22 +93,22 @@ public abstract class AbstractPropertySource implements PropertySource {
      *
      * @param name The name of the property to return
      * @param type The class object of the property to return
-     * @param <T> The returned type
+     * @param <T>  The returned type
      * @return The property stored for the given name, as an instance of the given type, <code>null</code> if a property
      * with such name does not exist
      * @throws ConfiguratorException if an invalid type conversion has been intended (for example,
-     *         trying to return a non-basic, non-String type)
+     *                               trying to return a non-basic, non-String type)
      * @throws NumberFormatException or trying to convert an alphanumeric property value to a Number
      */
     @Override
     public <T> T get(String name, Class<T> type) {
         String strVal = get(name);
-        if(strVal == null) {
+        if (strVal == null) {
             return null;
         }
         @SuppressWarnings("unchecked")
         Converter<T> converter = converters.get(type);
-        if(converter == null) {
+        if (converter == null) {
             throw new ConfiguratorException("Cannot convert to type: " + type.getName());
         }
         return converter.convert(strVal);

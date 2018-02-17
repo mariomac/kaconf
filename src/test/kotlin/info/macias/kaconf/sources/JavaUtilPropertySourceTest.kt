@@ -20,7 +20,7 @@ class JavaUtilPropertySourceTest {
     }
 
     @Test
-    fun `test can create source from InputStream`() {
+    fun `test can create source from InputStream (deprecated constructor)`() {
         var source : JavaUtilPropertySource? = null
         javaClass.getResourceAsStream("/javautil.properties").use {
             source = JavaUtilPropertySource(it)
@@ -33,14 +33,31 @@ class JavaUtilPropertySourceTest {
         configurator.configure(project)
 
         assertEquals("kaconf", project.name)
-        assertEquals("https://github.com/mariomac/kaconf", project.uri)
+        assertEquals(URI.create("https://github.com/mariomac/kaconf"), project.uri)
+    }
+
+    @Test
+    fun `test can create source from InputStream`() {
+        var source : JavaUtilPropertySource? = null
+        javaClass.getResourceAsStream("/javautil.properties").use {
+            source = JavaUtilPropertySource.from(it)
+        }
+
+        val project = Project()
+        val configurator = ConfiguratorBuilder()
+                .addSource(source!!)
+                .build()
+        configurator.configure(project)
+
+        assertEquals("kaconf", project.name)
+        assertEquals(URI.create("https://github.com/mariomac/kaconf"), project.uri)
     }
 
     @Test
     fun `test can create source from File`() {
         val res: URL = javaClass.getResource("/javautil.properties")
         val f = File(res.toURI())
-        val source = JavaUtilPropertySource(f)
+        val source = JavaUtilPropertySource.from(f)
 
         val project = Project()
         val configurator = ConfiguratorBuilder()
@@ -49,6 +66,6 @@ class JavaUtilPropertySourceTest {
         configurator.configure(project)
 
         assertEquals("kaconf", project.name)
-        assertEquals("https://github.com/mariomac/kaconf", project.uri)
+        assertEquals(URI.create("https://github.com/mariomac/kaconf"), project.uri)
     }
 }
