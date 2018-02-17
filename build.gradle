@@ -51,53 +51,57 @@ artifacts {
 }
 
 signing {
-    sign configurations.archives
+    if (project.hasProperty('deploy')) {
+        sign configurations.archives
+    }
 }
 
 group = "info.macias"
 archivesBaseName = "kaconf"
 version = "0.8.2"
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+if (project.hasProperty('deploy')) {
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
-            repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-
-            pom.project {
-                name 'KickAss Configuration system'
-                packaging 'jar'
-                // optionally artifactId can be defined here
-                description 'An annotation-based configuration system for Java and Kotlin'
-                url 'https://github.com/mariomac/kaconf'
-
-                scm {
-                     connection 'scm:git:git@github.com:mariomac/kaconf.git'
-                     developerConnection 'scm:git:git@github.com:mariomac/kaconf.git'
-                     url 'git@github.com:mariomac/kaconf.git'
+                repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
                 }
 
-                licenses {
-                    license {
-                        name 'The Apache License, Version 2.0'
-                        url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-                        distribution 'repo'
+                snapshotRepository(url: "https://oss.sonatype.org/content/repositories/snapshots/") {
+                    authentication(userName: ossrhUsername, password: ossrhPassword)
+                }
+
+                pom.project {
+                    name 'KickAss Configuration system'
+                    packaging 'jar'
+                    // optionally artifactId can be defined here
+                    description 'An annotation-based configuration system for Java and Kotlin'
+                    url 'https://github.com/mariomac/kaconf'
+
+                    scm {
+                        connection 'scm:git:git@github.com:mariomac/kaconf.git'
+                        developerConnection 'scm:git:git@github.com:mariomac/kaconf.git'
+                        url 'git@github.com:mariomac/kaconf.git'
                     }
-                }
 
-                developers {
-                    developer {
-                        id 'mariomac'
-                        name 'Mario Macias'
-                        email 'mario.macias.upc@gmail.com'
-                        url 'http://www.macias.info'
+                    licenses {
+                        license {
+                            name 'The Apache License, Version 2.0'
+                            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                            distribution 'repo'
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id 'mariomac'
+                            name 'Mario Macias'
+                            email 'mario.macias.upc@gmail.com'
+                            url 'http://www.macias.info'
+                        }
                     }
                 }
             }

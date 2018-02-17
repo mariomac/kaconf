@@ -325,14 +325,14 @@ can test them for me and tell us the results? :wink:
 
 There are still some potential improvements of interest in KAConf.
 
-### To implement in v0.8.4
+### To implement in v0.8.6
 
 * Some refactoring of the `Configurator.configure` code to be less _spaghetti_ and
   more efficient
-* Allow multiple names for a property, e.g.: `@Property("user.name", "USER_NAME")`
 
 ### To implement in v0.9
 
+* Allow multiple names for a property, e.g.: `@Property("user.name", "USER_NAME")`
 * Arrays of basic types and strings
 * Analyse `Property` usages in compile time to warn the user about potential
   issues (e.g. annotating a `final static` primitive value without using any
