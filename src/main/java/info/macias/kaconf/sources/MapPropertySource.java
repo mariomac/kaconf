@@ -25,8 +25,9 @@ public class MapPropertySource extends AbstractPropertySource {
     private Map<String, ?> properties;
 
     /**
-     * Instantiates the class by providing a map with the property values
-     *
+     * <p>Instantiates the class by providing a map with the property values</p>
+     * <p>If the properties argument is null, the {@link #isAvailable()} method will
+     * always return {@code false}</p>
      * @param properties The properties to access later
      */
     public MapPropertySource(Map<String, ?> properties) {

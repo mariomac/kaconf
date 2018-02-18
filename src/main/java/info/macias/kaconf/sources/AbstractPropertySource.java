@@ -81,7 +81,7 @@ public abstract class AbstractPropertySource implements PropertySource {
      * @return The property stored for the given name, as a String, <code>null</code> if a property
      * with such name does not exist or the property source is not available.
      */
-    protected abstract String get(String name);
+    protected abstract String get(String name); //TODO: check whether it worths deprecating it and play better with optionals
 
     /**
      * <p>Gets the value of the property whose name is defined by the <code>name</code> argument, transforming

@@ -18,10 +18,7 @@ package info.macias.kaconf;
 import info.macias.kaconf.sources.JavaUtilPropertySource;
 import info.macias.kaconf.sources.MapPropertySource;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
+import java.util.*;
 
 /**
  * Builder class to create {@link Configurator} instances
@@ -69,6 +66,29 @@ public class ConfiguratorBuilder {
     public ConfiguratorBuilder addSource(PropertySource propertySource) {
         if(propertySource.isAvailable()) {
             psList.add(propertySource);
+        }
+        return this;
+    }
+
+    /**
+     * <p>Tries to add a {@link PropertySource} that may be contained into an {@link Optional}.</p>
+     * <p>If the provided {@link Optional} is empty, the invocation of this method has no effect.</p>
+     * <p>The priority of the added {@link PropertySource} will have less priority to the ones
+     * added by the previous calls to the variants of <code>addSource</code> methods, but more
+     * priority to the sources added by the further calls to <code>addSource</code>.</p>
+     * <p>If the resulting value of invoking {@link PropertySource#isAvailable()} is
+     * <code>false</code>, the properties source won't be added to the chain of {@link PropertySource}</p>
+     * <p>This convenience method is provided for fluent usage with methods that
+     * return an {@link Optional}, such as {@link JavaUtilPropertySource#from(String)}</p>
+     * @param propertySourceOpt The source values for the properties
+     * @return A reference same <code>ConfigurationBuilder</code> that has been invoked
+     */
+    public ConfiguratorBuilder addSource(Optional<? extends PropertySource> propertySourceOpt) {
+        if (propertySourceOpt.isPresent()) {
+            PropertySource propertySource = propertySourceOpt.get();
+            if (propertySource.isAvailable()) {
+                psList.add(propertySource);
+            }
         }
         return this;
     }

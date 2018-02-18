@@ -1,8 +1,10 @@
 # KAConf [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
-KickAss Configuration system v0.8.4
+KickAss Configuration system v0.8.6
 
 [2016-2017 Mario Macías](http://github.com/mariomac)
+
+[Change log](CHANGELOG.md)
 
 ## About KAConf
 
@@ -12,7 +14,7 @@ inspired in the wonderful [Spring Boot](http://spring.io).
 Its strong points are:
 
 * Easy to use, integrate and extend
-* Tiny footprint: a single, 23KB JAR with no third-party dependencies
+* Tiny footprint: a single, ~12KB JAR with no third-party dependencies
 * Born from own's necessity, with no over-engineered use cases
 
 ### Maven coordinates:
@@ -21,7 +23,7 @@ Its strong points are:
 <dependency>
     <groupId>info.macias</groupId>
     <artifactId>kaconf</artifactId>
-    <version>0.8.4</version>
+    <version>0.8.6</version>
 </dependency>
 ```
 
@@ -47,7 +49,7 @@ public class DbManager {
   or `KA.a[Type]` helper methods.
   
 ```Java
-import static info.macias.kaconf.KA.*
+import static info.macias.kaconf.KA.*;
 
 public class Constants {
     @Property("timeout")
@@ -70,10 +72,10 @@ public class SomeController {
         Configurator conf = new ConfiguratorBuilder()
             .addSource(System.getenv()) // most priority
             .addSource(System.getProperties())
-            .addSource(new JavaUtilPropertySource("app.properties"))
-            .addSource(new JavaUtilPropertySource( // least priority
+            .addSource(JavaUtilPropertySource.from("app.properties"))
+            .addSource(JavaUtilPropertySource.from( // least priority
                 getClass().getResourceAsStream("defaults.properties")
-            )).build():
+            )).build();
 
         conf.configure(Constants.class);
         conf.configure(dbm);
@@ -83,7 +85,7 @@ public class SomeController {
     
 * It's easy to hardcode configuration for testing purposes.
    
-```Java   
+```Java
 public class TestSuite {
 
     DbManager dbm = new DbManager();
@@ -122,8 +124,8 @@ Example of usage:
 Configurator conf = new ConfiguratorBuilder()
     .addSource(System.getenv()) // most priority
     .addSource(System.getProperties())
-    .addSource(new JavaUtilPropertySource("app.properties"))
-    .addSource(new JavaUtilPropertySource( // least priority
+    .addSource(JavaUtilPropertySource.from("app.properties"))
+    .addSource(JavaUtilPropertySource.from( // least priority
         getClass().getResourceAsStream("defaults.properties")
     )).build():
 ```
@@ -325,7 +327,7 @@ can test them for me and tell us the results? :wink:
 
 There are still some potential improvements of interest in KAConf.
 
-### To implement in v0.8.6
+### To implement in v0.8.*
 
 * Some refactoring of the `Configurator.configure` code to be less _spaghetti_ and
   more efficient

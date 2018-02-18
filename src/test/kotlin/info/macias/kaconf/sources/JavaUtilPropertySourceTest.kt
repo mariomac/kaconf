@@ -40,7 +40,7 @@ class JavaUtilPropertySourceTest {
     fun `test can create source from InputStream`() {
         var source : JavaUtilPropertySource? = null
         javaClass.getResourceAsStream("/javautil.properties").use {
-            source = JavaUtilPropertySource.from(it)
+            source = JavaUtilPropertySource.from(it).get()
         }
 
         val project = Project()
@@ -57,7 +57,7 @@ class JavaUtilPropertySourceTest {
     fun `test can create source from File`() {
         val res: URL = javaClass.getResource("/javautil.properties")
         val f = File(res.toURI())
-        val source = JavaUtilPropertySource.from(f)
+        val source = JavaUtilPropertySource.from(f).get()
 
         val project = Project()
         val configurator = ConfiguratorBuilder()

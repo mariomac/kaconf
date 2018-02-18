@@ -2,7 +2,7 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group 'info.macias'
-version '0.8.4'
+version '0.8.6'
 
 task wrapper(type: Wrapper) {
     gradleVersion = '2.13'
@@ -10,7 +10,7 @@ task wrapper(type: Wrapper) {
 }
 
 buildscript {
-    ext.kotlin_version = '1.0.7'
+    ext.kotlin_version = '1.2.21'
 
     repositories {
         mavenCentral()
@@ -57,7 +57,10 @@ signing {
     }
 }
 
-archivesBaseName = project.name
+// Required by uploadArchives
+group = "info.macias"
+archivesBaseName = "kaconf"
+version = "0.8.6"
 
 if (project.hasProperty('deploy')) {
     uploadArchives {

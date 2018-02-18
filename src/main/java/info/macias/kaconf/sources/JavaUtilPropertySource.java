@@ -15,9 +15,8 @@
 */
 package info.macias.kaconf.sources;
 
-import info.macias.kaconf.ConfiguratorException;
-
 import java.io.*;
+import java.util.Optional;
 import java.util.Properties;
 
 /**
@@ -69,9 +68,14 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
      * <p>Creates a properties source by loading the properties file with the path that is specified as argument.</p>
      *
      * @param filePath The path to reach the Properties file.
-     * @throws ConfiguratorException if there is something wrong when loading the properties.
+     * @return An {@link Optional} containing the property source or empty if
+     *         the property source is not accessible (e.g. because it does not
+     *         exist or there are not permissions).
      */
-    public static JavaUtilPropertySource from(String filePath) {
+    public static Optional<JavaUtilPropertySource> from(String filePath) {
+        if (filePath == null) {
+            throw new IllegalArgumentException("File Path can't be null");
+        }
         File file = new File(filePath);
         return from(file);
     }
@@ -80,19 +84,21 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
      * <p>Creates a properties source by loading the File specified as argument.</p>
      *
      * @param file The {@link File} object to reach the Properties file.
-     * @throws ConfiguratorException if there is something wrong when loading the properties.
+     * @return An {@link Optional} containing the property source or empty if
+     *         the property source is null or not accessible (e.g. because it does not
+     *         exist or there are not permissions).
      */
-    public static JavaUtilPropertySource from(File file) {
-        if (file == null)
-            throw new IllegalArgumentException("'" + file + "' is not a valid file.");
-        Properties properties;
+    public static Optional<JavaUtilPropertySource> from(File file) {
+        if (file == null || !file.isFile())
+            return Optional.empty();
         try (FileInputStream fis = new FileInputStream(file)) {
+            Properties properties;
             properties = new Properties();
             properties.load(fis);
+            return Optional.of(new JavaUtilPropertySource(properties));
         } catch (IOException e) {
-            throw new ConfiguratorException(e);
+            return Optional.empty();
         }
-        return new JavaUtilPropertySource(properties);
     }
 
     /**
@@ -100,27 +106,30 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
      * reachable by the {@link InputStream} specified as argument</p>
      *
      * @param is The {@link InputStream} to access the Properties file
-     * @throws ConfiguratorException if there is something wrong when loading the properties.
+     * @return An {@link Optional} containing the property source or empty if
+     *         the property source is null or not accessible (e.g. because it does not
+     *         exist or there are not permissions).
      */
-    public static JavaUtilPropertySource from(InputStream is) {
+    public static Optional<JavaUtilPropertySource> from(InputStream is) {
         if (is == null) {
-            throw new IllegalArgumentException("The provided Input Stream can't be null");
+            return Optional.empty();
         }
-        Properties properties;
         try {
+            Properties properties;
             properties = new Properties();
             properties.load(is);
+            return Optional.of(new JavaUtilPropertySource(properties));
         } catch (NullPointerException | IOException e) {
-            properties = null;
+            return Optional.empty();
         }
-        return new JavaUtilPropertySource(properties);
     }
 
 
     /**
      * <p>Instantiates the class to handle the {@link java.util.Properties} object passed as an
      * argument</p>
-     *
+     * <p>If the properties argument is null, the {@link #isAvailable()} method will
+     * always return {@code false}</p>
      * @param properties The properties that will be handled by the instantiated object
      */
     public JavaUtilPropertySource(Properties properties) {
