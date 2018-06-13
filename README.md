@@ -341,5 +341,8 @@ There are still some potential improvements of interest in KAConf.
   helper method from the `KA` class);
 * Specify mandatory properties (`Configurator` will throw and exception if
   the property is not found)
+* Add a description annotation
+* Add a `String KAConf.info(...)` method that shows string information about the parameters
+  (name, description, etc...)
 
 
