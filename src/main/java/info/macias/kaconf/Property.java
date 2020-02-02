@@ -1,5 +1,5 @@
 /*
-    Copyright 2016 Mario Macías
+    Copyright 2016-2020 Mario Macías
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Set;
 
 /**
  * Annotation interface that indicates that a field will get its value from
@@ -29,8 +30,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Property {
     /**
-     * The name of the property that provides the value to the field this annotation target
-     * @return The name of the property that provides the value to the field this annotation target
+     * The names of the property that provide the value to the field that this annotation targets
+     * @return The names of the property that provide the value to the field that this annotation targets
      */
-    String value();
+    String[] value();
 }

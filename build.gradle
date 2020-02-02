@@ -2,15 +2,10 @@ apply plugin: 'maven'
 apply plugin: 'signing'
 
 group 'info.macias'
-version '0.8.6'
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '2.13'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
-}
+version '0.9.0'
 
 buildscript {
-    ext.kotlin_version = '1.2.21'
+    ext.kotlin_version = '1.3.61'
 
     repositories {
         mavenCentral()
@@ -60,7 +55,7 @@ signing {
 // Required by uploadArchives
 group = "info.macias"
 archivesBaseName = "kaconf"
-version = "0.8.6"
+version = "0.9.0"
 
 if (project.hasProperty('deploy')) {
     uploadArchives {

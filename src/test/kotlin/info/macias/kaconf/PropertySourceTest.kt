@@ -4,9 +4,6 @@ import info.macias.kaconf.sources.AbstractPropertySource
 import junit.framework.TestCase
 import org.junit.Test
 
-/**
- * Created by mmacias on 16/11/16.
- */
 class PropertySourceTest : TestCase("Test Property Sources") {
     val b: Byte = -123
     val c: Char = '!'

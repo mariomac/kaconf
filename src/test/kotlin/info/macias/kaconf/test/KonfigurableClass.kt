@@ -3,9 +3,6 @@ package info.macias.kaconf.test
 import info.macias.kaconf.KA
 import info.macias.kaconf.Property
 
-/**
- * Created by mmacias on 24/11/16.
- */
 class KonfigurableClass {
     @Property("publicint")
     var publicint = KA.def(321)

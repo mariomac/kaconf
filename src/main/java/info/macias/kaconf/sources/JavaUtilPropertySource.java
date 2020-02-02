@@ -1,5 +1,5 @@
 /*
-    Copyright 2016 Mario Macías
+    Copyright 2016-2020 Mario Macías
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
      * return <code>false</code>.</p>
      *
      * @param filePath The path to reach the Properties file.
-     * @deprecated Use {@link #from(String)} instead. This constructor will be removed in version 0.9.0.
+     * @deprecated Use {@link #from(String)} instead. This constructor will be removed in future versions of Kaconf.
      */
     public JavaUtilPropertySource(String filePath) {
         try(FileInputStream fis = new FileInputStream(filePath)) {
@@ -52,7 +52,7 @@ public class JavaUtilPropertySource extends AbstractPropertySource {
      * return <code>false</code>.</p>
      *
      * @param is The {@link InputStream} to access the Properties file
-     * @deprecated Use {@link #from(InputStream)} instead. This constructor will be removed in version 0.9.0.
+     * @deprecated Use {@link #from(InputStream)} instead. This constructor will be removed in future versions of Kaconf.
      */
     public JavaUtilPropertySource(InputStream is) {
         try {

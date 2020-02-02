@@ -1,5 +1,5 @@
 /*
-    Copyright 2016 Mario Macías
+    Copyright 2016-2020 Mario Macías
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -137,9 +137,18 @@ public class Configurator {
         modifiersField.setAccessible(areModifiersAccessible);
     }
 
-    private <T> Optional<T> findPriorValue(String key, Class<T> pType) {
+    // finds any of the keys into the properties sources, returning the values by priority
+    private <T> Optional<T> findPriorValue(String[] keys, Class<T> pType) {
         return sources.stream()
-                .map(ps -> ps.get(key, pType))
+                .map(ps -> {
+                    for (String key: keys) {
+                        T type = ps.get(key, pType);
+                        if (type != null) {
+                            return type;
+                        }
+                    }
+                    return null;
+                })
                 .filter(value -> value != null)
                 .findFirst();
     }

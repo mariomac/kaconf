@@ -1,18 +1,16 @@
 package info.macias.kaconf
 
 import info.macias.kaconf.sources.AbstractPropertySource
+import info.macias.kaconf.sources.MapPropertySource
 import info.macias.kaconf.test.*
 import junit.framework.TestCase
 import org.junit.Test
 import java.util.stream.Collectors
 
-/**
- * Created by mmacias on 19/11/16.
- */
 class ConfiguratorTest : TestCase("Test Configurator") {
     internal class MockedProperty : AbstractPropertySource() {
         val properties = mapOf(
-               "publicint" to "1234",
+                "publicint" to "1234",
                 "protectedstring" to "hello my colleague",
                 "privatebyte" to "-123",
                 "subpublicint" to "12345",
@@ -39,7 +37,25 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.protectedstring, "hello my colleague")
         assertNull(obj.nullstring)
         assertNull(obj.nullinteger)
-        assertEquals(obj.nullint,0)
+        assertEquals(obj.nullint, 0)
+    }
+
+    @Test
+    fun testMultipleVarNames() {
+        // As publicint is also defined as PUBLIC_INT property,
+        // and protectedstring is also defined as PROTECTED_STRING
+        // we check that the properties can be found with both names
+        var obj = SomeClass()
+        ConfiguratorBuilder()
+                .addSource(MapPropertySource(mapOf(
+                        "PUBLIC_INT" to "666"
+                )))
+                .addSource(MockedProperty())
+                .build()
+                .configure(obj)
+
+        assertEquals(obj.publicint, 666)
+        assertEquals(obj.protectedstring, "hello my colleague")
     }
 
     @Test
@@ -55,7 +71,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.subprotectedstring, "hello my other colleague")
         assertNull(obj.subnullstring)
         assertNull(obj.subnullinteger)
-        assertEquals(obj.subnullint,0)
+        assertEquals(obj.subnullint, 0)
 
         assertEquals(obj.privatebyte, -123)
         assertEquals(obj.publicint, 1234)
@@ -63,7 +79,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.protectedstring, "hello my colleague")
         assertNull(obj.nullstring)
         assertNull(obj.nullinteger)
-        assertEquals(obj.nullint,0)
+        assertEquals(obj.nullint, 0)
 
     }
 
@@ -86,7 +102,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.subprotectedstring, "hello my other colleague")
         assertNull(obj.subnullstring)
         assertNull(obj.subnullinteger)
-        assertEquals(obj.subnullint,0)
+        assertEquals(obj.subnullint, 0)
 
         assertEquals(obj.privatebyte, -123)
         assertEquals(obj.publicint, -4321)
@@ -94,7 +110,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.protectedstring, "hello my colleague")
         assertEquals(obj.nullstring, "hello boy")
         assertNull(obj.nullinteger)
-        assertEquals(obj.nullint,0)
+        assertEquals(obj.nullint, 0)
     }
 
     @Test
@@ -120,7 +136,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.subprotectedstring, "Hello you")
         assertNull(obj.subnullstring)
         assertNull(obj.subnullinteger)
-        assertEquals(obj.subnullint,0)
+        assertEquals(obj.subnullint, 0)
 
         assertEquals(obj.privatebyte, 23)
         assertEquals(obj.publicint, 333444)
@@ -128,7 +144,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.protectedstring, "hello my colleague")
         assertNull(obj.nullstring)
         assertNull(obj.nullinteger)
-        assertEquals(obj.nullint,0)
+        assertEquals(obj.nullint, 0)
     }
 
     @Test
@@ -160,6 +176,7 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(WithStaticValuesSubClass.getSubStaticValue(), -12)
 
     }
+
     @Test
     fun testFinalValues() {
         val obj = WithFinalValues()
@@ -212,14 +229,15 @@ class ConfiguratorTest : TestCase("Test Configurator") {
     fun testChars() {
         class CharClass {
             @Property("char1")
-            val char1 : Char = KA.def(',')
+            val char1: Char = KA.def(',')
             @Property("char2")
-            val char2 : Char = KA.def(',')
+            val char2: Char = KA.def(',')
             @Property("char3")
-            val char3 : Char = KA.def(',')
+            val char3: Char = KA.def(',')
             @Property("char4")
-            val char4 : Char = KA.def(',')
+            val char4: Char = KA.def(',')
         }
+
         val conf = ConfiguratorBuilder()
                 .addSource(mapOf(
                         "char1" to "X",
@@ -230,10 +248,10 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         val obj1 = CharClass()
         conf.configure(obj1)
 
-        assertEquals(obj1.char1,'X')
-        assertEquals(obj1.char2,'y')
-        assertEquals(obj1.char3,'l')
-        assertEquals(obj1.char4,',')
+        assertEquals(obj1.char1, 'X')
+        assertEquals(obj1.char2, 'y')
+        assertEquals(obj1.char3, 'l')
+        assertEquals(obj1.char4, ',')
     }
 
     @Test
@@ -256,12 +274,12 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertEquals(obj.getProtectedString(), "hi")
         assertEquals(obj.finalchar, 'X')
         assertEquals(obj.propertynotfound, "default")
-        assertEquals(KonfigurableClass.finalstaticint,333444)
+        assertEquals(KonfigurableClass.finalstaticint, 333444)
         assertEquals(KonfigurableClass.finalstaticstring, "hello perraco")
 
         conf.configure(KonfigurableObject)
         assertTrue(KonfigurableObject.aboolean)
-        assertEquals(KonfigurableObject.anint,6789)
+        assertEquals(KonfigurableObject.anint, 6789)
         assertNull(KonfigurableObject.nonfoundproperty)
     }
 }

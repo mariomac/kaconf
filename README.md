@@ -1,31 +1,38 @@
 # KAConf [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
-KickAss Configuration system v0.8.6
+[2016-2020 Mario Macías](http://github.com/mariomac)
 
-[2016-2017 Mario Macías](http://github.com/mariomac)
-
-[Change log](CHANGELOG.md)
-
-## About KAConf
-
-_KickAss_ is an Annotation-based configuration system
+_KickAss_ Configuration v0.9.0 is an Annotation-based configuration system
 inspired in the wonderful [Spring Boot](http://spring.io).
 
 Its strong points are:
 
 * Easy to use, integrate and extend
-* Tiny footprint: a single, ~12KB JAR with no third-party dependencies
+* Tiny footprint: a single, ~13KB JAR with no third-party dependencies
 * Born from own's necessity, with no over-engineered use cases
 
-### Maven coordinates:
-
+Maven Coordinates
 ```XML
 <dependency>
     <groupId>info.macias</groupId>
     <artifactId>kaconf</artifactId>
-    <version>0.8.6</version>
+    <version>0.9.0</version>
 </dependency>
 ```
+
+[Change log](CHANGELOG.md)
+
+* [About KAConf](#about-kaconf)
+* [Quick demonstration of usage](#quick-demonstration-of-usage)
+* [Building and using a `Configurator` object](#building-and-using-a-configurator-object)
+* [Default Configurator behaviour](#default-configurator-behaviour)
+* [Mixing naming conventions into a property](#mixing-naming-conventions-into-a-property)
+* [Inherited fields](#inherited-fields)
+* [Adding custom Property Sources](#adding-custom-property-sources)
+* [`Static final` fields](#static-final-fields)
+* [Kotlin basic types support](#kotlin-basic-types-support)
+* [Next steps](#next-steps)
+
 
 ### Quick demonstration of usage
 
@@ -231,6 +238,21 @@ private Integer intValue;     // value --> 1234
 private Integer nullableInt;  // value --> null
 ```
 
+## Mixing naming conventions into a property
+
+When you use multiple configuration sources (e.g. environment variables and Java properties),
+different naming conventions may apply for the same property.
+
+You can set multiple names for each property, and KAConf will indistinctly use both (in
+the same priority as the order in the property array).
+
+```java
+public class Animal {
+    @Property({"ANIMAL_NAME", "animal.name"})
+    private final String name;
+}
+```
+
 ## Inherited fields
 
 KAConf allows setting properties that are annotated in the superclass of the
@@ -327,14 +349,9 @@ can test them for me and tell us the results? :wink:
 
 There are still some potential improvements of interest in KAConf.
 
-### To implement in v0.8.*
-
+### To implement in v0.9.x
 * Some refactoring of the `Configurator.configure` code to be less _spaghetti_ and
   more efficient
-
-### To implement in v0.9
-
-* Allow multiple names for a property, e.g.: `@Property("user.name", "USER_NAME")`
 * Arrays of basic types and strings
 * Analyse `Property` usages in compile time to warn the user about potential
   issues (e.g. annotating a `final static` primitive value without using any

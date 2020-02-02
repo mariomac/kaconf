@@ -2,13 +2,10 @@ package info.macias.kaconf.test;
 
 import info.macias.kaconf.Property;
 
-/**
- * Created by mmacias on 19/11/16.
- */
 public class SomeClass {
-    @Property("publicint")
+    @Property({"publicint", "PUBLIC_INT"})
     public int publicint;
-    @Property("protectedstring")
+    @Property({"protectedstring", "PROTECTED_STRING"})
     protected String protectedstring;
     @Property("privatebyte")
     private byte privatebyte;

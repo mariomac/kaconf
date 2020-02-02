@@ -1,5 +1,9 @@
 # Change Log
 
+## v0.9.0
+* Updated gradle wrapper
+* Allow multiple names for a property, e.g.: `@Property({"user.name", "USER_NAME"})`
+
 ## v0.8.6 
 * **API retrocompatibility break** with `v0.8.4`: `JavaUtilPropertySource.from` don't throw
   exceptions if the property sources are available. Instead they return an `Optional`.

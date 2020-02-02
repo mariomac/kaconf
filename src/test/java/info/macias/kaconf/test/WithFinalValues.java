@@ -3,9 +3,6 @@ package info.macias.kaconf.test;
 import info.macias.kaconf.KA;
 import info.macias.kaconf.Property;
 
-/**
- * Created by mmacias on 21/11/16.
- */
 public class WithFinalValues {
     @Property("finalValue")
     public final int finalValue = 0;
