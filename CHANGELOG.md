@@ -11,7 +11,7 @@
 
 ## v0.8.6 
 * **API retrocompatibility break** with `v0.8.4`: `JavaUtilPropertySource.from` don't throw
-  exceptions if the property sources are available. Instead they return an `Optional`.
+  exceptions if the property sources aren't available. Instead they return an `Optional`.
 
 ## v0.8.4
 * Fixed `NullPointerException` error on `JavaUtilPropertySource`.
