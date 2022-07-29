@@ -1,5 +1,10 @@
 # Change Log
 
+## v0.9.1
+* Fixed a bug that prevented Kaconf to work with JVM versions higher than 11.
+  * **IMPORTANT**: if your JVM version is 12 or higher, you won't be able to set properties into
+    `final` values.
+
 ## v0.9.0
 * Updated gradle wrapper
 * Allow multiple names for a property, e.g.: `@Property({"user.name", "USER_NAME"})`

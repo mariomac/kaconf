@@ -4,8 +4,8 @@ import info.macias.kaconf.sources.AbstractPropertySource
 import info.macias.kaconf.sources.MapPropertySource
 import info.macias.kaconf.test.*
 import junit.framework.TestCase
+import org.junit.Assume
 import org.junit.Test
-import java.util.stream.Collectors
 
 class ConfiguratorTest : TestCase("Test Configurator") {
     internal class MockedProperty : AbstractPropertySource() {
@@ -179,6 +179,10 @@ class ConfiguratorTest : TestCase("Test Configurator") {
 
     @Test
     fun testFinalValues() {
+        if (!jvm11orLess()) {
+            System.err.println("testFinalValues: skipping for JVM version >= 12")
+            return
+        }
         val obj = WithFinalValues()
 
         val conf = ConfiguratorBuilder()
@@ -255,7 +259,11 @@ class ConfiguratorTest : TestCase("Test Configurator") {
     }
 
     @Test
-    fun testKotlin() {
+    fun testKotlinJVM8() {
+        if (!jvm11orLess()) {
+            System.err.println("testKotlinJVM8: skipping test JVM version >= 12")
+            return
+        }
         val obj = KonfigurableClass()
         val conf = ConfiguratorBuilder()
                 .addSource(mapOf("publicint" to -44321,
@@ -281,5 +289,42 @@ class ConfiguratorTest : TestCase("Test Configurator") {
         assertTrue(KonfigurableObject.aboolean)
         assertEquals(KonfigurableObject.anint, 6789)
         assertNull(KonfigurableObject.nonfoundproperty)
+    }
+    @Test
+    fun testKotlinJVM12() {
+        if (jvm11orLess()) {
+            System.err.println("testKotlinJVM12: skipping test JVM version < 12")
+            return
+        }
+        val obj = KonfigurableClass()
+        val conf = ConfiguratorBuilder()
+            .addSource(mapOf("publicint" to -44321,
+                "privatebyte" to 3,
+                "protectedstring" to "hi",
+                "anint" to 6789))
+            .build()
+        conf.configure(obj)
+
+        assertEquals(obj.publicint, -44321)
+        assertEquals(obj.getPrivateByte(), 3)
+        assertEquals(obj.getProtectedString(), "hi")
+        assertEquals(obj.finalchar, 'a')
+        assertEquals(obj.propertynotfound, "default")
+        assertEquals(KonfigurableClass.finalstaticint, 0)
+        assertEquals(KonfigurableClass.finalstaticstring, "")
+
+        conf.configure(KonfigurableObject)
+        assertFalse(KonfigurableObject.aboolean)
+        assertEquals(KonfigurableObject.anint, 6789)
+        assertNull(KonfigurableObject.nonfoundproperty)
+    }
+
+    private fun jvm11orLess(): Boolean {
+        val version = System.getProperty("java.version");
+        val v = version.split(".")
+        if (v[0].equals("1")) {
+            return Integer.parseInt(v[1]) <= 11
+        }
+        return Integer.parseInt(v[0]) <= 11
     }
 }

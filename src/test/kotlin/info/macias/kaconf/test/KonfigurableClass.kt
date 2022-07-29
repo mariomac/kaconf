@@ -35,7 +35,7 @@ class KonfigurableClass {
 
 object KonfigurableObject {
     @Property("aboolean")
-    val aboolean = KA.aBoolean()
+    var aboolean = KA.aBoolean()
 
     @Property("anint")
     var anint: Int? = null

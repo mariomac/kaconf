@@ -16,7 +16,7 @@ Maven Coordinates
 <dependency>
     <groupId>info.macias</groupId>
     <artifactId>kaconf</artifactId>
-    <version>0.9.0</version>
+    <version>0.9.1</version>
 </dependency>
 ```
 
@@ -51,9 +51,20 @@ public class DbManager {
 }
 ```
 
-* You can even define `final` and `static` fields, with default values.
+* You can define multiple property names, from lower to higher priority:
+
+```java
+@Property({"db.user", "DB_USER"})
+public String user;
+
+@Property({"db.user", "DB_PASSWORD"})
+protected String password;
+```
+
+* **ONLY IF YOUR JVM VERSION IS 11 OR LOWER**, you can define `final` and `static` fields, with default values.
   Properties that are both `final static` require to use the `KA.def`
   or `KA.a[Type]` helper methods.
+  * If you try to set a final field in Java 12 or higher, a `ConfigurationException` will be thrown.
   
 ```Java
 import static info.macias.kaconf.KA.*;
@@ -301,6 +312,9 @@ return `false` in the `isAvailable` method.
 
 ## `Static final` fields
 
+**NOTE**: this functonality won't work if you run Kaconf in a JVM version higher than 11. It will
+throw a `ConfigurationException`. 
+
 Because of the way the Java compiler inlines the `static final` fields of
 primitive types, it is
 necessary to assign the result of any method call to the declaration of the
@@ -324,8 +338,8 @@ class KonfigurableClass {
     @Property("publicint")
     var publicint = KA.def(321)
 
-    @Property("finalchar")
-    val finalchar = KA.def('a')
+    @Property("someChar")
+    var someChar = KA.def('a')
 
     companion object {
         @Property("finalstaticint")
@@ -335,7 +349,7 @@ class KonfigurableClass {
 
 object KonfigurableObject {
     @Property("aboolean")
-    val aboolean = KA.aBoolean()
+    var aboolean = KA.aBoolean()
 
     @Property("anint")
     var anint: Int? = null
@@ -348,18 +362,4 @@ can test them for me and tell us the results? :wink:
 ## Next steps
 
 There are still some potential improvements of interest in KAConf.
-
-### To implement in v0.9.x
-* Some refactoring of the `Configurator.configure` code to be less _spaghetti_ and
-  more efficient
-* Arrays of basic types and strings
-* Analyse `Property` usages in compile time to warn the user about potential
-  issues (e.g. annotating a `final static` primitive value without using any
-  helper method from the `KA` class);
-* Specify mandatory properties (`Configurator` will throw and exception if
-  the property is not found)
-* Add a description annotation
-* Add a `String KAConf.info(...)` method that shows string information about the parameters
-  (name, description, etc...)
-
 

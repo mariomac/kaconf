@@ -71,77 +71,86 @@ public class Configurator {
     }
 
     private void configure(Object dst, Class clazz) {
-        boolean areModifiersAccessible = true;
-        // TODO: if a security manager is present, make this not failing when the accesses to fields are permitted
-
+        boolean jvmAllowsAccessingModifiers = true;
+        boolean isModifiersFieldAccessible = true;
         Field modifiersField = null;
         try {
             modifiersField = Field.class.getDeclaredField("modifiers");
-            areModifiersAccessible = modifiersField.isAccessible();
+            isModifiersFieldAccessible = modifiersField.isAccessible();
             modifiersField.setAccessible(true);
         } catch (NoSuchFieldException e) {
-            throw new RuntimeException(e);
+            // this can happen because the security manager disallows this operation
+            // e.g. in Java >=12
+            jvmAllowsAccessingModifiers = false;
         }
 
         for (Field f : clazz.getDeclaredFields()) {
             int fieldModifiers = f.getModifiers();
             if (dst != null || Modifier.isStatic(fieldModifiers)) {
 
-                // Make accessible final static members
+                // Make accessible final static members, if possible
                 boolean modifiersChanged = false;
+                boolean modifiableField = true;
                 try {
-                    if (Modifier.isStatic(fieldModifiers) && Modifier.isFinal(fieldModifiers)) {
-                        modifiersField.setInt(f, fieldModifiers & ~Modifier.FINAL);
-                        modifiersChanged = true;
+                    if (Modifier.isFinal(fieldModifiers) && Modifier.isStatic(fieldModifiers)) {
+                        if (jvmAllowsAccessingModifiers) {
+                            modifiersField.setInt(f, fieldModifiers & ~Modifier.FINAL);
+                            modifiersChanged = true;
+                        } else {
+                            modifiableField = false;
+                        }
                     }
                 } catch (IllegalAccessException e) {
                     throw new ConfiguratorException(e);
                 }
-
+                final boolean finalModifiableField = modifiableField;
                 Stream.of(f.getAnnotations())
                         .filter(a -> a.annotationType().isAssignableFrom(Property.class))
                         .map(a -> (Property) a)
-                        .findFirst()
-                        .ifPresent(p ->
-                                findPriorValue(p.value(), f.getType())
-                                        .ifPresent(value -> {
-                                            boolean isAcessible = f.isAccessible();
-                                            if (!isAcessible) {
-                                                f.setAccessible(true);
-                                            }
+                        .findFirst().flatMap(p -> findPriorValue(p.value(), f.getType()))
+                        .ifPresent(value -> {
+                            if (!finalModifiableField) {
+                                throw new ConfiguratorException(
+                                        "This JVM disallows writing final field: " + f.getName());
+                            }
+                            boolean isAcessible = f.isAccessible();
+                            if (!isAcessible) {
+                                f.setAccessible(true);
+                            }
 
 
-                                            try {
-                                                f.set(dst, value);
-                                            } catch (NumberFormatException | IllegalAccessException e) {
-                                                throw new ConfiguratorException(e);
-                                            }
-                                            if (!isAcessible) {
-                                                f.setAccessible(false);
-                                            }
-                                        })
-                        );
+                            try {
+                                f.set(dst, value);
+                            } catch (NumberFormatException |
+                                     IllegalAccessException e) {
+                                throw new ConfiguratorException(e);
+                            }
+                            if (!isAcessible) {
+                                f.setAccessible(false);
+                            }
+                        });
 
                 // Restore final static members
                 if (modifiersChanged) {
                     try {
                         modifiersField.setInt(f, fieldModifiers);
-                    }
-                    catch(IllegalAccessException e){
+                    } catch (IllegalAccessException e) {
                         throw new ConfiguratorException(e);
                     }
                 }
 
             }
         }
-        modifiersField.setAccessible(areModifiersAccessible);
+        if (jvmAllowsAccessingModifiers) {
+            modifiersField.setAccessible(isModifiersFieldAccessible);
+        }
     }
 
     // finds any of the keys into the properties sources, returning the values by priority
     private <T> Optional<T> findPriorValue(String[] keys, Class<T> pType) {
         return sources.stream()
                 .map(ps -> {
-                    for (String key: keys) {
+                    for (String key : keys) {
                         T type = ps.get(key, pType);
                         if (type != null) {
                             return type;

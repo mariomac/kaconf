@@ -34,8 +34,8 @@ class ConfiguratorBuilderTest : TestCase("Test Configurator Builder") {
 
         assertTrue(try {
             ConfiguratorBuilder()
-                    .addSource(JavaUtilPropertySource("someUnexistentFile.txt"))
-                    .addSource(JavaUtilPropertySource(javaClass.getResourceAsStream("UnexistentResource.txt")))
+                    .addSource(JavaUtilPropertySource.from("someUnexistentFile.txt"))
+                    .addSource(JavaUtilPropertySource.from(javaClass.getResourceAsStream("UnexistentResource.txt")))
                     .build()
             false
         } catch(e:ConfiguratorException) {

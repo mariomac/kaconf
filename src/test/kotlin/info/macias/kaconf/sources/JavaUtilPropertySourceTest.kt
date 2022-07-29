@@ -23,7 +23,7 @@ class JavaUtilPropertySourceTest {
     fun `test can create source from InputStream (deprecated constructor)`() {
         var source : JavaUtilPropertySource? = null
         javaClass.getResourceAsStream("/javautil.properties").use {
-            source = JavaUtilPropertySource(it)
+            source = JavaUtilPropertySource.from(it).get()
         }
 
         val project = Project()
