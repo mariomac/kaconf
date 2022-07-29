@@ -1,8 +1,8 @@
 # KAConf [![Awesome Kotlin Badge](https://kotlin.link/awesome-kotlin.svg)](https://github.com/KotlinBy/awesome-kotlin)
 
-[2016-2020 Mario Macías](http://github.com/mariomac)
+[2016-2022 Mario Macías](http://github.com/mariomac)
 
-_KickAss_ Configuration v0.9.0 is an Annotation-based configuration system
+_KickAss_ Configuration v0.9.1 is an Annotation-based configuration system
 inspired in the wonderful [Spring Boot](http://spring.io).
 
 Its strong points are:
